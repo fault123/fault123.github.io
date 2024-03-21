@@ -16,24 +16,34 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+    <meta name="description" content="为什么我不看CC2，而是选择在看完CC1之后去看CC6，是因为它和CC1的LazyMap有关系，所以我们将CC6拉前头看这里是因为发现了一个TiedMapEntry的类，发现它的hashcode方法（注意这里和URLDNS链不同的是URLDNS链用的是HashMap里的hashcode方法，而这里是需要通过HashMap中的readObject来调用TiedMapEntry中的hashcode方法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tomcat源码初识（tomcat流程）">
-<meta property="og:url" content="http://example.com/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/index.html">
+<meta property="og:title" content="commons-collections 6">
+<meta property="og:url" content="http://example.com/2024/03/21/commons-collections%206/index.html">
 <meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+<meta property="og:description" content="为什么我不看CC2，而是选择在看完CC1之后去看CC6，是因为它和CC1的LazyMap有关系，所以我们将CC6拉前头看这里是因为发现了一个TiedMapEntry的类，发现它的hashcode方法（注意这里和URLDNS链不同的是URLDNS链用的是HashMap里的hashcode方法，而这里是需要通过HashMap中的readObject来调用TiedMapEntry中的hashcode方法">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png">
-<meta property="article:published_time" content="2024-03-21T04:15:35.943Z">
-<meta property="article:modified_time" content="2024-03-21T04:19:21.106Z">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172359.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172810.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172901.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173349.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173425.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173440.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173753.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173854.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205174818.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205174849.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205175634.png">
+<meta property="article:published_time" content="2024-03-21T05:06:50.644Z">
+<meta property="article:modified_time" content="2024-03-21T05:03:03.362Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
+<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172359.png">
   
   
   
-  <title>Tomcat源码初识（tomcat流程） - fault`s blog</title>
+  <title>commons-collections 6 - fault`s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +213,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Tomcat源码初识（tomcat流程）"></span>
+            <span id="subtitle" data-typed-text="commons-collections 6"></span>
           
         </div>
 
@@ -214,8 +224,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 12:15" pubdate>
-          2024年3月21日 中午
+        <time datetime="2024-03-21 13:06" pubdate>
+          2024年3月21日 下午
         </time>
       </span>
     
@@ -226,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          242 字
+          475 字
         
       </span>
     
@@ -237,7 +247,7 @@
         
         
         
-          3 分钟
+          4 分钟
         
       </span>
     
@@ -274,27 +284,13 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Tomcat源码初识（tomcat流程）</h1>
+            <h1 id="seo-header">commons-collections 6</h1>
             
             
               <div class="markdown-body">
                 
-                <ol>
-<li>tomcat启动类Bootstrap，启动时会执行这个类里面的main方法</li>
-<li>创建Bootstrap对象，执行init方法<ol>
-<li>初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)，然后sharedLoader是后期加载项目中的class的父类加载器，有共享的class或者jar,可以配在这<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li>通过反射创建Catalina对象（catalinaLoader.loadClass(“org.apache.catalina.startup.Catalina”)）</li>
-<li>设置tomcat容器父加载器 Catalina.setParentClassLoader(sharedLoader)</li>
-</ol>
-</li>
-<li>load: Catalina.load()责任链模式，一层往下一层执行<ol>
-<li>加载conf.server.xml</li>
-<li>将xml解析成对象，digester.parse(inputSource)</li>
-<li>一个tomcat对应一个Server，Server下包含多个Service，每个Service包含多个Connector和一个Engine，每个Engine下包含多个Host，每个Host对应一个文件夹下的项目，每个项目被包装成StandardContext，每个项目都有自己的listener，filter，servlet，每个servlet包装成wrapper对象，结构如下图<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li></li>
-</ol>
-</li>
-</ol>
+                <p>为什么我不看CC2，而是选择在看完CC1之后去看CC6，是因为它和CC1的LazyMap有关系，所以我们将CC6拉前头看<br>这里是因为发现了一个TiedMapEntry的类，发现它的hashcode方法（注意这里和URLDNS链不同的是URLDNS链用的是HashMap里的hashcode方法，而这里是需要通过HashMap中的readObject来调用TiedMapEntry中的hashcode方法，二者本质上不同）</p>
+<p>我们先去看TiedMapEntry的构造方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172359.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>传完赋值<br>我们再去看看HashMap的readObject方法中是对key还是value调用hash<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172810.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这里很显然是对key进行了hash操作，说到这可能有点不明白这个hash和hashcode方法有什么关系，我们再去跟踪一手就能看出来<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205172901.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>其实它调用了key的hashcode方法，而这个key显然可控，所以我们需要将东西放到key里而不是value里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173349.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>成功了，但是还记得URLDNS中的put方法中也有hash么<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173425.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们去看看它的hash方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173440.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>喵，眼熟了，所以说我们根本没有走我们设想的路，它直接通过hashMap的put方法走了hashcode，所以说即使我们注释掉序列化和反序列化，它也能用，看吧<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173753.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>所以这还叫个钩钩的反序列化，所以我们又要像URLDNS链一样通过反射去改它的值<br>配上我当时的笔记<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205173854.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>但我们这里不是去修改hashcode的值，而是修改我们的factory，但是当我们修改好后发现还是不对，代码如下<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205174818.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后我们继续去看put中间发生了什么<br>一路跟到这里来发现<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205174849.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它会去查有没有这个key，如果没有的话会把它放进去，那就我们在结束完put后把它添加的东西删掉<br>防止它调用的是&lt;lazyMap,f4u1t&gt;这个键值对，我们删掉它后再通过翻身修改发现它成功了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205175634.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
 
                 
               </div>
@@ -304,6 +300,13 @@
               <div class="post-metas my-3">
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+    </div>
+  
 </div>
 
 
@@ -312,8 +315,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Tomcat源码初识（tomcat流程）</div>
-      <div>http://example.com/2024/03/21/Tomcat源码初识（tomcat流程）/</div>
+      <div>commons-collections 6</div>
+      <div>http://example.com/2024/03/21/commons-collections 6/</div>
     </div>
     <div class="license-meta">
       
@@ -357,9 +360,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/03/21/URLDNS/" title="URLDNS">
+                      <a href="/2024/03/21/commonscollections-1/" title="commonscollections-1">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">URLDNS</span>
+                        <span class="hidden-mobile">commonscollections-1</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -367,8 +370,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/03/21/hello-world/" title="Hello World">
-                        <span class="hidden-mobile">Hello World</span>
+                      <a href="/2024/03/21/commons-collections%204/" title="commons-collections 4">
+                        <span class="hidden-mobile">commons-collections 4</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

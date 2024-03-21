@@ -16,24 +16,22 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+    <meta name="description" content="fault的2023开端依稀记得今年的开始是刷题，彼时的我刚进入智邮普创一月有余，仍然在刷题积累的阶段，每周要交的周报便是最大的苦恼，周报内容是否完善，是否有收获，是否有质量，这三点便组成了我唯一的苦恼，现在说起来倒有些好笑，最开始的我竟然因为周报而烦恼过哈哈哈哈。在进入minink后有多了每周需要上交的刷题wp,，紧接着就是打N1 junior，对当时的我确实是一个不小的打击，从觉得自己学了很多">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tomcat源码初识（tomcat流程）">
-<meta property="og:url" content="http://example.com/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/index.html">
+<meta property="og:title" content="2023年终总结">
+<meta property="og:url" content="http://example.com/2024/03/21/2023/index.html">
 <meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+<meta property="og:description" content="fault的2023开端依稀记得今年的开始是刷题，彼时的我刚进入智邮普创一月有余，仍然在刷题积累的阶段，每周要交的周报便是最大的苦恼，周报内容是否完善，是否有收获，是否有质量，这三点便组成了我唯一的苦恼，现在说起来倒有些好笑，最开始的我竟然因为周报而烦恼过哈哈哈哈。在进入minink后有多了每周需要上交的刷题wp,，紧接着就是打N1 junior，对当时的我确实是一个不小的打击，从觉得自己学了很多">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png">
-<meta property="article:published_time" content="2024-03-21T04:15:35.943Z">
-<meta property="article:modified_time" content="2024-03-21T04:19:21.106Z">
+<meta property="article:published_time" content="2024-03-21T05:09:03.121Z">
+<meta property="article:modified_time" content="2024-03-21T05:08:39.034Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="总结">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
   
   
   
-  <title>Tomcat源码初识（tomcat流程） - fault`s blog</title>
+  <title>2023年终总结 - fault`s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +201,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Tomcat源码初识（tomcat流程）"></span>
+            <span id="subtitle" data-typed-text="2023年终总结"></span>
           
         </div>
 
@@ -214,8 +212,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 12:15" pubdate>
-          2024年3月21日 中午
+        <time datetime="2024-03-21 13:09" pubdate>
+          2024年3月21日 下午
         </time>
       </span>
     
@@ -226,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          242 字
+          1.6k 字
         
       </span>
     
@@ -237,7 +235,7 @@
         
         
         
-          3 分钟
+          14 分钟
         
       </span>
     
@@ -274,27 +272,17 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Tomcat源码初识（tomcat流程）</h1>
+            <h1 id="seo-header">2023年终总结</h1>
             
             
               <div class="markdown-body">
                 
-                <ol>
-<li>tomcat启动类Bootstrap，启动时会执行这个类里面的main方法</li>
-<li>创建Bootstrap对象，执行init方法<ol>
-<li>初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)，然后sharedLoader是后期加载项目中的class的父类加载器，有共享的class或者jar,可以配在这<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li>通过反射创建Catalina对象（catalinaLoader.loadClass(“org.apache.catalina.startup.Catalina”)）</li>
-<li>设置tomcat容器父加载器 Catalina.setParentClassLoader(sharedLoader)</li>
-</ol>
-</li>
-<li>load: Catalina.load()责任链模式，一层往下一层执行<ol>
-<li>加载conf.server.xml</li>
-<li>将xml解析成对象，digester.parse(inputSource)</li>
-<li>一个tomcat对应一个Server，Server下包含多个Service，每个Service包含多个Connector和一个Engine，每个Engine下包含多个Host，每个Host对应一个文件夹下的项目，每个项目被包装成StandardContext，每个项目都有自己的listener，filter，servlet，每个servlet包装成wrapper对象，结构如下图<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li></li>
-</ol>
-</li>
-</ol>
+                <h1 id="fault的2023"><a href="#fault的2023" class="headerlink" title="fault的2023"></a>fault的2023</h1><h2 id="开端"><a href="#开端" class="headerlink" title="开端"></a>开端</h2><p>依稀记得今年的开始是刷题，彼时的我刚进入智邮普创一月有余，仍然在刷题积累的阶段，每周要交的周报便是最大的苦恼，周报内容是否完善，是否有收获，是否有质量，这三点便组成了我唯一的苦恼，现在说起来倒有些好笑，最开始的我竟然因为周报而烦恼过哈哈哈哈。在进入minink后有多了每周需要上交的刷题wp,，紧接着就是打N1 junior，对当时的我确实是一个不小的打击，从觉得自己学了很多到逐渐意识到自己甚至冰山一角都没有触及的过程是比较痛苦的，这就是我在今年遭受的第一次打击。周报与N1 junior,组成了我今年的开端。</p>
+<h2 id="责任"><a href="#责任" class="headerlink" title="责任"></a>责任</h2><p>若要说起我今年学到最多的东西，很显然是责任，或者确切些说是如何成为一个大人。<br>去年刚从高中的大门走出，觉得大学里很多事情都很复杂，总是想躲到师傅身后，让他去替我做所有的决定，然后好逃避自己应该有的责任。从大一下学期开始，无论是与没见过的人打交道，亦或是和同级之间的交往合作，总是让我觉得压力倍增，好在我拥有实验室同级的鼓励和安慰以及师傅时不时的指导，在处理很多事情的时候也有人可以给我一些建议，一切的一切都让我觉得不那么孤单。<br>到了大二，成为了智邮普创安全组的负责人和A&amp;D协会副会长，我变得更加仔细小心，说话做事都得考虑三分，但当我看到协会在我的带领下变得更加有序的时候，学弟学妹在实验室安心学习的时候，我觉得这一切都很值得。我逐渐在变成自己大一时想成为的样子，有担当，可以肩负起自己身上的责任，即使带着整个实验室去发展，也可以做到处变不惊。</p>
+<h2 id="自我怀疑"><a href="#自我怀疑" class="headerlink" title="自我怀疑"></a>自我怀疑</h2><p>今年的成长更多是在不断的自我怀疑中依然选择理清头脑，接着走下去。<br>从最开始怀疑自己的学习能力，到怀疑自己情商是否真的很低，再到怀疑自己是否真的适合当智邮普创安全组的负责人，每一次的自我怀疑都伴随着失眠和焦虑，我好多次以为自己会崩溃，会直接撂挑子不干，但其实并没有，而是选择在自我怀疑的崩溃中尽力去让自己理智的分析事情<br>虽然在这中间做了很多蠢事，也懊悔过，但自己的进步是能看得到的。无论是以副会长的名义去和老师谈与协会合作，还是以实验室安全组负责人的名义去做分享，我逐渐变得从容且张弛有度。<br>我觉得要让我深刻的改变，今年我所经历的自我怀疑与挣扎足矣。</p>
+<h2 id="收获"><a href="#收获" class="headerlink" title="收获"></a>收获</h2><p>若要说今年收获了什么，那便是处理事情的能力，以及人际交往和技术的巨大提升。这一切都来自于处理协会、实验室以及各方人际关系所获得的。大大小小的奖也拿了不少，也逐渐在向自己所期望成为的大人的方向努力，一切的一切都让我觉得很棒很棒。不仅仅是自我能力的提升，在打CTF的过程中也让我收获了一批很好的朋友，更让我遇到了自己的伯乐和引路人。一切的一切都让我觉得今年收获真的很大～<br>今年的fault比去年进步了很多很多，有比赛的证书，有同级的友谊，有师长的帮助，有能力的提升，学会了技术，学会了为人处世的基础，也学会了爱，更学会了感恩。</p>
+<h2 id="感恩"><a href="#感恩" class="headerlink" title="感恩"></a>感恩</h2><p>我觉得其实一路走来，我最应该感谢的就是我的师傅–cube ，是他带我入门了web，也是他不厌其烦的将很多东西传授给我，虽然过程很辛苦，也被鞭策过不少次，但我心中很清楚这一切都是为了让我变得更好。无论是最开始带我入门，回答一些很蠢的问题，还是之后引荐我，教我如何为人处世，一切的一切都慢慢将我塑造成了今天的样子。其实对真正感谢的人反而说不出来骚话，但确实，没有您就没有现在的fault，如果真要说我上大学以来最感谢的人，那一定是您（不会说骚话喵）。<br>接下来要感谢的就是maple，也是在今年帮助我很多的师傅，也是让我将技术上的自我怀疑变成目标和动力的一个转换契机。不仅在技术上帮我整合了之前学的很乱很粗的知识点，更是让我看到了真正的技术是什么样，以及我真正想拥有的技术需要我付出什么。<br>最后要感谢的就是Y爹，一些心态上的问题一直在找Y爹救救，也是从Y爹这儿，我感受到了一个真正合格的负责人该有的心态，担当以及统筹能力。而我也从Y爹这里学到了我感触很深的一句话“学会学习，学会生活”，我在接下来的学习生活中也在努力追求并实现这句话。<br>当然，除此之外要感谢的人太多太多，有老师，也有学长学姐和同级，没有你们的帮助，可能我还是一个迷茫不知所措的fault喵。谢谢大家～</p>
+<h1 id="fault-的2024目标"><a href="#fault-的2024目标" class="headerlink" title="fault 的2024目标"></a>fault 的2024目标</h1><p>1、找个实习<br>2、学会更好的调控自己的情绪和生活<br>3、个人技术的提升<br>4、尽力让智邮普创变得更好<br>5、学一个新的方向并坚持下去<br>6、每周坚持写写周报，进行定期的自我正向反馈</p>
 
                 
               </div>
@@ -304,6 +292,13 @@
               <div class="post-metas my-3">
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%80%BB%E7%BB%93/" class="print-no-link">#总结</a>
+      
+    </div>
+  
 </div>
 
 
@@ -312,8 +307,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Tomcat源码初识（tomcat流程）</div>
-      <div>http://example.com/2024/03/21/Tomcat源码初识（tomcat流程）/</div>
+      <div>2023年终总结</div>
+      <div>http://example.com/2024/03/21/2023/</div>
     </div>
     <div class="license-meta">
       
@@ -357,9 +352,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/03/21/URLDNS/" title="URLDNS">
+                      <a href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">URLDNS</span>
+                        <span class="hidden-mobile">kerberos协议学习</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -367,8 +362,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/03/21/hello-world/" title="Hello World">
-                        <span class="hidden-mobile">Hello World</span>
+                      <a href="/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/" title="NSSCTF IOT题目复现">
+                        <span class="hidden-mobile">NSSCTF IOT题目复现</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

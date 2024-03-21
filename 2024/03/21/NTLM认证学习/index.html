@@ -16,24 +16,25 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+    <meta name="description" content="系统版本对LM和NTLM的支持 NTLM 认证简介NTLM是NT LAN Manager的缩写，NTLM是指telnet的一种验证身份方式，即问询&#x2F;应答身份验证协议 认证流程进行一个嫌弃自己的字好丑 这就是我理解的并且画的流程图  用户登录客户端，进行本地认证 客户端首先在本地将当前用户的密码加密为HTLM Hash 确认双方协议版本，客户端向服务器明文发送自己的账号 服务器返回一个十六">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tomcat源码初识（tomcat流程）">
-<meta property="og:url" content="http://example.com/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/index.html">
+<meta property="og:title" content="NTLM认证学习">
+<meta property="og:url" content="http://example.com/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="tomcat启动类Bootstrap，启动时会执行这个类里面的main方法 创建Bootstrap对象，执行init方法 初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)">
+<meta property="og:description" content="系统版本对LM和NTLM的支持 NTLM 认证简介NTLM是NT LAN Manager的缩写，NTLM是指telnet的一种验证身份方式，即问询&#x2F;应答身份验证协议 认证流程进行一个嫌弃自己的字好丑 这就是我理解的并且画的流程图  用户登录客户端，进行本地认证 客户端首先在本地将当前用户的密码加密为HTLM Hash 确认双方协议版本，客户端向服务器明文发送自己的账号 服务器返回一个十六">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png">
-<meta property="article:published_time" content="2024-03-21T04:15:35.943Z">
-<meta property="article:modified_time" content="2024-03-21T04:19:21.106Z">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240118194641.png">
+<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240117225706.png">
+<meta property="article:published_time" content="2024-03-21T05:11:21.573Z">
+<meta property="article:modified_time" content="2024-03-21T05:10:58.770Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="域相关">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png">
+<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240118194641.png">
   
   
   
-  <title>Tomcat源码初识（tomcat流程） - fault`s blog</title>
+  <title>NTLM认证学习 - fault`s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +204,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Tomcat源码初识（tomcat流程）"></span>
+            <span id="subtitle" data-typed-text="NTLM认证学习"></span>
           
         </div>
 
@@ -214,8 +215,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 12:15" pubdate>
-          2024年3月21日 中午
+        <time datetime="2024-03-21 13:11" pubdate>
+          2024年3月21日 下午
         </time>
       </span>
     
@@ -226,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          242 字
+          435 字
         
       </span>
     
@@ -237,7 +238,7 @@
         
         
         
-          3 分钟
+          4 分钟
         
       </span>
     
@@ -274,27 +275,30 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Tomcat源码初识（tomcat流程）</h1>
+            <h1 id="seo-header">NTLM认证学习</h1>
             
             
               <div class="markdown-body">
                 
-                <ol>
-<li>tomcat启动类Bootstrap，启动时会执行这个类里面的main方法</li>
-<li>创建Bootstrap对象，执行init方法<ol>
-<li>初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)，然后sharedLoader是后期加载项目中的class的父类加载器，有共享的class或者jar,可以配在这<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li>通过反射创建Catalina对象（catalinaLoader.loadClass(“org.apache.catalina.startup.Catalina”)）</li>
-<li>设置tomcat容器父加载器 Catalina.setParentClassLoader(sharedLoader)</li>
+                <h2 id="系统版本对LM和NTLM的支持"><a href="#系统版本对LM和NTLM的支持" class="headerlink" title="系统版本对LM和NTLM的支持"></a>系统版本对LM和NTLM的支持</h2><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240118194641.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="NTLM-认证"><a href="#NTLM-认证" class="headerlink" title="NTLM 认证"></a>NTLM 认证</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>NTLM是NT LAN Manager的缩写，NTLM是指telnet的一种验证身份方式，即问询&#x2F;应答身份验证协议</p>
+<h3 id="认证流程"><a href="#认证流程" class="headerlink" title="认证流程"></a>认证流程</h3><p>进行一个嫌弃自己的字好丑<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240117225706.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>这就是我理解的并且画的流程图</p>
+<ol>
+<li>用户登录客户端，进行<strong>本地认证</strong></li>
+<li>客户端首先在本地将当前用户的密码加密为HTLM Hash</li>
+<li>确认双方协议版本，客户端向服务器明文发送自己的账号</li>
+<li>服务器返回一个十六位随机数，也就是图中的challenge</li>
+<li>客户端需要使用本地的NTLM Hash来加密这个challenge并发回给服务器，也就是图中的response</li>
+<li>服务器将明文的用户名、challenge、response发给域控制器（DC</li>
+<li>域控制器用这个用户名在SAM密码管理库中找此用户对应的NTLM Hash</li>
+<li>用这个NTLM Hash来加密服务器发过来的与发给用户端一样的challenge，与服务器端传过来的response进行对比，如果相同，那么就认证成功</li>
 </ol>
-</li>
-<li>load: Catalina.load()责任链模式，一层往下一层执行<ol>
-<li>加载conf.server.xml</li>
-<li>将xml解析成对象，digester.parse(inputSource)</li>
-<li>一个tomcat对应一个Server，Server下包含多个Service，每个Service包含多个Connector和一个Engine，每个Engine下包含多个Host，每个Host对应一个文件夹下的项目，每个项目被包装成StandardContext，每个项目都有自己的listener，filter，servlet，每个servlet包装成wrapper对象，结构如下图<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
-<li></li>
-</ol>
-</li>
-</ol>
+<h4 id="本地认证"><a href="#本地认证" class="headerlink" title="本地认证"></a>本地认证</h4><p>Windows不会储存用户的明文密码，而是将明文密码加密后储存在SAM中</p>
+<p>本地认证的过程中，用户登录时，系统会自动将用户输入的明文密码加密为NTLM Hash，然后和SAM中的NTLM Hash进行比较</p>
+<h3 id="NTLM-Hash的生成"><a href="#NTLM-Hash的生成" class="headerlink" title="NTLM Hash的生成"></a>NTLM Hash的生成</h3><p>hhhh这个过程还算好吧，无非就是代码写了好多行突然发现可以五行之内解决）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> hashlib,binascii<br><br><span class="hljs-built_in">hash</span> = hashlib.new(<span class="hljs-string">&#x27;md4&#x27;</span>, <span class="hljs-string">&quot;fault&quot;</span>.encode(<span class="hljs-string">&#x27;utf-16le&#x27;</span>)).digest()<br><br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">hash</span>)<br><br><span class="hljs-built_in">print</span>(binascii.hexlify(<span class="hljs-built_in">hash</span>))<br></code></pre></td></tr></table></figure>
+<p>之前很迫切的没有用内置的方法去搞它，一直在那里进行一个手搓，嘛，最后的脚本在上面辣</p>
 
                 
               </div>
@@ -304,6 +308,13 @@
               <div class="post-metas my-3">
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/" class="print-no-link">#域相关</a>
+      
+    </div>
+  
 </div>
 
 
@@ -312,8 +323,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Tomcat源码初识（tomcat流程）</div>
-      <div>http://example.com/2024/03/21/Tomcat源码初识（tomcat流程）/</div>
+      <div>NTLM认证学习</div>
+      <div>http://example.com/2024/03/21/NTLM认证学习/</div>
     </div>
     <div class="license-meta">
       
@@ -357,18 +368,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/03/21/URLDNS/" title="URLDNS">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">URLDNS</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/03/21/hello-world/" title="Hello World">
-                        <span class="hidden-mobile">Hello World</span>
+                      <a href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习">
+                        <span class="hidden-mobile">kerberos协议学习</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
