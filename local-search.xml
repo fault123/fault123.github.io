@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>Tomcat源码初识（tomcat流程）</title>
+    <link href="/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/"/>
+    <url>/2024/03/21/Tomcat%E6%BA%90%E7%A0%81%E5%88%9D%E8%AF%86%EF%BC%88tomcat%E6%B5%81%E7%A8%8B%EF%BC%89/</url>
+    
+    <content type="html"><![CDATA[<ol><li>tomcat启动类Bootstrap，启动时会执行这个类里面的main方法</li><li>创建Bootstrap对象，执行init方法<ol><li>初始化classloaders,三个加载器加载路径在conf&#x2F;catalina.properties中定义(默认catalinaLoader与sharedLoader没有设置，两个类加载器默认都是commonLoader,如果设置了，父类是commonLoader)，然后sharedLoader是后期加载项目中的class的父类加载器，有共享的class或者jar,可以配在这<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225215808.png" alt="image.png"></li><li>通过反射创建Catalina对象（catalinaLoader.loadClass(“org.apache.catalina.startup.Catalina”)）</li><li>设置tomcat容器父加载器 Catalina.setParentClassLoader(sharedLoader)</li></ol></li><li>load: Catalina.load()责任链模式，一层往下一层执行<ol><li>加载conf.server.xml</li><li>将xml解析成对象，digester.parse(inputSource)</li><li>一个tomcat对应一个Server，Server下包含多个Service，每个Service包含多个Connector和一个Engine，每个Engine下包含多个Host，每个Host对应一个文件夹下的项目，每个项目被包装成StandardContext，每个项目都有自己的listener，filter，servlet，每个servlet包装成wrapper对象，结构如下图<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240225220214.png" alt="image.png"></li><li></li></ol></li></ol>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/2024/03/21/hello-world/"/>
+    <url>/2024/03/21/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
