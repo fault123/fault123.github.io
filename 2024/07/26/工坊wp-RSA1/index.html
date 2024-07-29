@@ -1,0 +1,705 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/douni.jpg">
+  <link rel="icon" href="/img/douni.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="fault_li">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[RSA1]P1发现源码直接给我了p,q,e,c,那就很简单了，我们求出phi,N就可以通过inverse函数拿到phi的逆元d，这样就可以直接解出来明文了，代码如下 123456789101112from Crypto.Util.number import *p &#x3D; 10554915510546378513140074459658086644656654144905337809416976066">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nss-工坊wp">
+<meta property="og:url" content="http://example.com/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/index.html">
+<meta property="og:site_name" content="fault&#96;s blog">
+<meta property="og:description" content="[RSA1]P1发现源码直接给我了p,q,e,c,那就很简单了，我们求出phi,N就可以通过inverse函数拿到phi的逆元d，这样就可以直接解出来明文了，代码如下 123456789101112from Crypto.Util.number import *p &#x3D; 10554915510546378513140074459658086644656654144905337809416976066">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-29T11:19:23.790Z">
+<meta property="article:author" content="fault_li">
+<meta property="article:tag" content="Crypto">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>nss-工坊wp - fault`s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/shubiao.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.2.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>fault`s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="nss-工坊wp"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-26 00:00" pubdate>
+          2024年7月26日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">nss-工坊wp</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="RSA1-P1"><a href="#RSA1-P1" class="headerlink" title="[RSA1]P1"></a>[RSA1]P1</h2><p>发现源码直接给我了p,q,e,c,那就很简单了，我们求出phi,N就可以通过inverse函数拿到phi的逆元d，这样就可以直接解出来明文了，代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> Crypto.Util.number <span class="hljs-keyword">import</span> *<br><br>p = <span class="hljs-number">10554915510546378513140074459658086644656654144905337809416976066414771647836950941616441505897207397834928781511863699153349798682451297889979721668885951</span><br>q = <span class="hljs-number">8246403321715011123191410826902524505032643184038566851264109473851746507405534573077909160292816825514872584170252311902322051822644609979417178306809223</span><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">40005881669517895877352756665523238535105922590962714344556374248977905431683140065629966778249773228248201807844489945346731806741025157651474530811920115794270396320935022110691338083709019538562205165553541077855422953438117902279834449006455379382431883650004540282758907332683496655914597029545677184720</span><br>n = p*q<br><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br>d = inverse(e,phi)<br>m = <span class="hljs-built_in">pow</span>(c,d,n)<br><span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+<h2 id="RSA1-P2"><a href="#RSA1-P2" class="headerlink" title="[RSA1]P2"></a>[RSA1]P2</h2><p>这次没有直接给我p和q，但是我们可以通过分解n得到<br>于是我们去yafu(真不如factordb)<br>最终代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">n = <span class="hljs-number">7382582015733895208810490097582153009797420348201515356767397357174775587237553842395468027650317457503579404097373070312978350435795210286224491315941881</span><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">6511001389892474870028836129813814173158254564777610289284056550272120510686249909340499673868720839756059423749304765055919251717618117507007046973023557</span><br>p = <span class="hljs-number">70538125404512947763739093348083497980212021962975762144416432920656660487657</span><br>q = <span class="hljs-number">104660876276442216612517835199819767034152013287345576481899196023866133215633</span><br><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br>d = inverse(e,phi)<br>m = <span class="hljs-built_in">pow</span>(c,d,n)<br><span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+
+<h2 id="RSA1-P3"><a href="#RSA1-P3" class="headerlink" title="[RSA1]P3"></a>[RSA1]P3</h2><p>也是简单的一个分解</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">n = <span class="hljs-number">53690629441472827148854210396580805205350972614395425306316047967905824330731</span><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">22130296334673852790451396673112575082637108306697684532954477845025885087040</span><br>p = <span class="hljs-number">193584665240506752994134779660255197091</span><br>q = <span class="hljs-number">277349599849597463956171076348973750041</span><br><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br>d = inverse(e,phi)<br>m = <span class="hljs-built_in">pow</span>(c,d,n)<br><span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+<h2 id="RSA1-P4"><a href="#RSA1-P4" class="headerlink" title="[RSA1]P4"></a>[RSA1]P4</h2><p>发现就是p-q过小问题，这里yafu集成了这种分解方法，所以我直接yafu一把嗦</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">p = <span class="hljs-number">10753464577529272766954987635204502694646829328992120268238206697158857879611091921112122276180123366757978627222693360361364149654146518796988494299998729</span><br>q = <span class="hljs-number">10753464577529272766954987635204502694646829328992120268238206697158857879611091921112122276180123366757978627222693360361364149654146518796988494299998033</span><br><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">98161406745910866780822530171878255235776133393411573803496865047700715941955255328757920065032397556905095591171977170479344602512244671081108703687450560269408412671849929423399172588599903975793985819498354819305128607934552101433664794909855378636055525016664559476808490723554481335856183927702549281730</span><br><br>n = p*q<br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br><br>d = inverse(e,phi)<br><span class="hljs-built_in">print</span>(long_to_bytes(<span class="hljs-built_in">pow</span>(c,d,n)))<br></code></pre></td></tr></table></figure>
+
+<h2 id="RSA1-P5"><a href="#RSA1-P5" class="headerlink" title="[RSA1]P5"></a>[RSA1]P5</h2><p>还是yafu一把嗦</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">n = <span class="hljs-number">148841588941490812589697505975986386226158446072049530534135525236572105309550985274214825612079495930267744452266230141871521931612761645600600201983605957650711248808703757693378777706453580124982526368706977258199152469200838211055230241296139605912607613807871432800586045262879581100319519318390454452117</span><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">69038543593219231496623016705860610154255535760819426453485115089535439537440188692852514795648297200067103841434646958466720891016026061658602312900242658759575613625726750416539176437174502082858413122020981274672260498423684555063381678387696096811975800995242962853092582362805345713900308205654744774932</span><br>p = <span class="hljs-number">12200065120379104459630695224710181907653841921369674962900093531339421658815375891425102591939094029941691738405035324548070063226677838530633694428729829</span><br>q = <span class="hljs-number">12200065120379104459630695224710181907653841921369674962900093531339421658815305905822146210878434959851438079877557401145694064756239882458467901042367473</span><br><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br>d = inverse(e,phi)<br><span class="hljs-built_in">print</span>(long_to_bytes(<span class="hljs-built_in">pow</span>(c,d,n)))<br></code></pre></td></tr></table></figure>
+
+<h2 id="RSA1-P6"><a href="#RSA1-P6" class="headerlink" title="[RSA1]P6"></a>[RSA1]P6</h2><p>共享素数攻击，这里的加密算法是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">p1 = getPrime(<span class="hljs-number">512</span>)<br>q = getPrime(<span class="hljs-number">512</span>)<br>p2 = getPrime(<span class="hljs-number">512</span>)<br><br>n1 = p1*q<br>n2 = p2*q<br><br>e = <span class="hljs-number">65537</span><br><br>m = bytes_to_long(flag)<br>c1 = <span class="hljs-built_in">pow</span>(m, e, n1)<br>c2 = <span class="hljs-built_in">pow</span>(m, e, n2)<br><br></code></pre></td></tr></table></figure>
+<p>也就是我们可以通过gcd来算出我们的p1，因为n1和n2有相同的公因数p，而且加密了两次，所以我们只需要随便取一个解密即可，脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 6 </span><br>n1 = <span class="hljs-number">143348646254804947818644803938588739009782265465565896704788366218178523508874903492905378927641178487821742289009401873633609987818871281146199303052141439575438691652893995423962176259643151111739185844059243400387734688275416379337335777994990138009973618431459431410429980866760075387393812720247541406893</span><br>n2 = <span class="hljs-number">138110854441015362783564250048191029327770295545362614687087481715680856350219966472039006526758450117969049316234863489558254565946242898336924686721846675826468588471046162610143748100096038583426519355288325214365299329095841907207926280081868726568947436076663762493891291276498567791697978693639037765169</span><br>e = <span class="hljs-number">65537</span><br>c1 = <span class="hljs-number">54957154834913405861345262613986460384513988240935244315981524013378872930144117440787175357956479768211180412158274730449811947349624843965933828130932856052315165316154486515277625404352272475136003785605985702495858150662789554694910771308456687676791434476722168247882078861234982509648037033827107552029</span><br>c2 = <span class="hljs-number">122221335585005390437769701090707585780333874638519916373585594040154234166935881089609641995190534396533473702495240511296379249872039728112248708182969185010334637138777948970821974238214641235158623707766980447918480715835847907220219601467702961667091318910582445444058108454023108157805147341928089334736</span><br><br>p = gmpy2.gcd(n1,n2)<br>q1 = n1 // p<br>phi = (p-<span class="hljs-number">1</span>)*(q1-<span class="hljs-number">1</span>)<br>d = inverse(e,phi)<br><span class="hljs-built_in">print</span>(long_to_bytes(<span class="hljs-built_in">pow</span>(c1,d,n1)))<br></code></pre></td></tr></table></figure>
+<h2 id="RSA1-P7"><a href="#RSA1-P7" class="headerlink" title="[RSA1]P7"></a>[RSA1]P7</h2><p>这里涉及到了多因子，我记得没错的话应该都是差不多的算法<br>好吧，看来我的记忆没问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">p = <span class="hljs-number">10666139331774428325755287635566473140804481321882464031499529816800186578792308674238646794969384836340484775213796013129603472328582005363876462361316357</span><br>q = <span class="hljs-number">8419311673449738061914489023962717718536471719688567807316495262754711350004888752049108347226115000749280146228195893953964759818878155006622123533942989</span><br>r = <span class="hljs-number">12875078327453384158245832541544758526474680184252540739652077682353277702054275525591573258723948221345537075374635382175740236093131628077747126356403959</span><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">424552463648937499189041230155623101311087334789253159440707211761796081289342164253743235182597460622581134089949035117444838205449163269030784233435435681797627188717450074808905561404960693227573181548281296514743775615606388692910356320667720308219275107443303501165027740512539959960217657836317351146520079753390346207659007421416917274795119021374032194294225350901136669304225010974617136606299060486198480556729770211945777266366417547752798441211059402</span><br><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)*(r-<span class="hljs-number">1</span>)<br>n = p*q*r<br>d = inverse(e,phi)<br><span class="hljs-built_in">print</span>(long_to_bytes(<span class="hljs-built_in">pow</span>(c,d,n)))<br></code></pre></td></tr></table></figure>
+
+<h2 id="RSA1-P8"><a href="#RSA1-P8" class="headerlink" title="[RSA1]P8"></a>[RSA1]P8</h2><p>加密脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">p = getPrime(<span class="hljs-number">256</span>)<br>q = getPrime(<span class="hljs-number">256</span>)<br>n = (p**<span class="hljs-number">3</span>) * q<br>e = <span class="hljs-number">65537</span><br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br><br>m = bytes_to_long(flag)<br><br>c = <span class="hljs-built_in">pow</span>(m, e, n)<br></code></pre></td></tr></table></figure>
+<p>这里虽然是p的三次方，但是我们可以把它理解为多因子试试<br>但是<br>$$<br>\phi(n) &#x3D; \phi(p^{3})\phi(q)正确，但是\phi(p^{3}) &#x3D; p^{2}(p-1)<br>$$<br>这也就是我第一次没有做对的原因<br>所以直接进行一个公式的利用</p>
+<h2 id="RSA1-P9"><a href="#RSA1-P9" class="headerlink" title="[RSA1]P9"></a>[RSA1]P9</h2><blockquote>
+<ul>
+<li>又是一道多因子的题目，不同的是此处的𝑟&#x3D;2𝑟𝑛⋅𝑒+1r&#x3D;2rn​⋅e+1，这有什么特殊之处吗？</li>
+</ul>
+</blockquote>
+<pre><code class="hljs">你可以尝试直接按照P7的exp来进行求解，会发现解出来的明文是乱码，或者你可以将代码中`inverse`函数替换为`gmpy2`中的`invert`函数（二者功能一样），你会发现得到了一个错误
+
+`ZeroDivisionError: invert() no inverse exists`
+
+提示逆元不存在，这是为什么，我们来看一下此时的𝑝ℎ𝑖phi是多少
+
+𝑝ℎ𝑖=(𝑝−1)(𝑞−1)(𝑟−1)=(𝑝−1)(𝑞−1)⋅2𝑟𝑛⋅𝑒phi=(p−1)(q−1)(r−1)=(p−1)(q−1)⋅2rn​⋅e
+
+然后我们可以发现𝑒e整除𝑝ℎ𝑖phi，所以他们二者是不互素的，不互素则逆元不存在，那为什么`inverse`函数还是能求解呢（虽然答案是错误的），其实我们可以打印一下使用`inverse`函数输出的𝑑d，会发现𝑑=1d=1，他并没有进行数据校验，而是会`1`。
+</code></pre>
+<ul>
+<li><p>那么此时我们该如何解决这个RSA问题，逆元不存在这说明对应的私钥不存在，难道是不可解了吗？</p>
+<p>  答案是否定的，我们可以考虑flag比较短，则flag转为数字后的数𝑚m足够小，则有</p>
+<p>  𝑚  𝑝𝑞≡𝑚  𝑛mmodpq≡mmodn</p>
+<p>  什么意思呢，也就是说𝑚m不仅比𝑛n（这里的𝑛&#x3D;𝑝𝑞𝑟n&#x3D;pqr）还小也比𝑝𝑞pq还小，所以取模得到的结果也相同，那么此时有，设</p>
+<p>  𝑐1&#x3D;𝑐  𝑝𝑞&#x3D;(𝑚𝑒  𝑛)  𝑝𝑞&#x3D;𝑚𝑒  𝑝𝑞𝑒𝑑1≡1(mod𝜑(𝑝𝑞))𝑐1𝑑1≡𝑚(mod𝑝𝑞)c1​&#x3D;cmodpq&#x3D;(memodn)modpq&#x3D;memodpqed1​≡1(modφ(pq))c1d1​​≡m(modpq)</p>
+<p>  即𝑐1c1​为𝑐c再模𝑝𝑞pq的结果，根据模的性质有𝑐1c1​便是消息使用公钥(𝑝𝑞,𝑒)(pq,e)加密的结果，那么此时我们可以求出该公钥对应的私钥进行解密，得到𝑚  𝑝𝑞mmodpq的结果，又因为𝑚m比较小，所以该结果直接就是𝑚m。</p>
+<p>  在实际计算中，我们其实并不需要额外写一句<code>c1 = c % (p*q)</code>，因为根据模的性质，只要最后进行了模运算即可。</p>
+</li>
+<li><p>其实通俗一点的理解就是当𝑚m比较小时，此时就算公钥对应的私钥不存在（逆元不存在），我们可以考虑将公钥转化为其他公钥（用原公钥因子进行重组）再尝试求解私钥进行解密，依然可以得到正确结果。</p>
+<p>  这里其实也就解释了为什么P7，P8需要加上大量字符串的填充，就是为了防止使用该方法直接解出，在现实世界的RSA算法应用标准中，明文其实都会用特定算法进行填充来防止这种情况出现。</p>
+</li>
+</ul>
+<p>脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 9 </span><br>p = <span class="hljs-number">7478755670255767435237487693415479182290330775502792675052667363676831056436638619069277770540533350723045234676443621124912287506103439704868369839725279</span><br>q = <span class="hljs-number">9232828888049557325429111621080998490274442347556398052322580869768941301413255711626092627273543579067597113958627672298942570149816938335701615759283713</span><br>r = <span class="hljs-number">102909133680612532601801231903654039</span><br>e = <span class="hljs-number">65537</span><br>c = <span class="hljs-number">142893174944324070830219394465469685943669308818639857030565389839224452373848570577201378981080333784852764502832587008270072323948511579823852437852643609820245476634896477031076952735298279618952398460203032125853063235638358942643559551563899381032067185778629120272032518475352761100115057449043142848203976076694124978394099839339406197</span><br><br>n = p*q*r<br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br>d = inverse(e, phi)<br>m = <span class="hljs-built_in">pow</span>(c, d, p*q)<br><br><span class="hljs-built_in">print</span>(long_to_bytes(m))<br></code></pre></td></tr></table></figure>
+
+<h2 id="RSA1-P10"><a href="#RSA1-P10" class="headerlink" title="[RSA1]P10"></a>[RSA1]P10</h2><p>一个典型的e和phi不互素的问题<br>脚本如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 9</span><br>p = <span class="hljs-number">9927950299160071928293508814174740578824022211226572614475267385787727188317224760986347883270504573953862618573051241506246884352854313099453586586022059</span><br>q = <span class="hljs-number">9606476151905841036013578452822151891782938033700390347379468858357928877640534612459734825681004415976431665670102068256547092636766287603818164456689343</span><br>e = <span class="hljs-number">131074</span><br>c = <span class="hljs-number">68145285629092005589126591120307889109483909395989426479108244531402455690717006058397784318664114589567149811644664654952286387794458474073250495807456996723468838094551501146672038892183058042546944692051403972876692350946611736455784779361761930869993818138259781995078436790236277196516800834433299672560</span><br>n = p*q<br>phi = (p-<span class="hljs-number">1</span>)*(q-<span class="hljs-number">1</span>)<br>_gcd = gmpy2.gcd(e, phi)<br>d = gmpy2.invert(e//_gcd, phi)<br>m_gcd = gmpy2.powmod(c, d, n)<br>m = gmpy2.iroot(m_gcd, _gcd)    <span class="hljs-comment"># 得到元组 (mpz(1920535408007397829480400151650246901210634018403879187581), True)</span><br>flag = libnum.n2s(<span class="hljs-built_in">int</span>(m[<span class="hljs-number">0</span>]))<br><span class="hljs-built_in">print</span>(flag)<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Crypto/" class="print-no-link">#Crypto</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>nss-工坊wp</div>
+      <div>http://example.com/2024/07/26/工坊wp-RSA1/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>fault_li</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">工坊wp-RSA2</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic&#39;s%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘">
+                        <span class="hidden-mobile">DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://github.com/fault123" target="_blank" rel="nofollow noopener"><span>fault</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/Cherry.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
+</html>
