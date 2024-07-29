@@ -1,686 +1,190 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
-
-
-
-<head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/douni.jpg">
-  <link rel="icon" href="/img/douni.jpg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="fault_li">
-  <meta name="keywords" content="">
-  
-    <meta name="description" content="preCC3和我们刚才调试的CC6有一些不同，CC1和CC6我们可以知道命令执行的方式是Runtime.getRuntime().exec但众所周知Java还可以通过加载任意类来进行恶意行为CC3是基于这个的，所以我今天也花了不少时间来重新学习动态类加载，在初步学习之后的基础上，开始调试CC3 根据动态类加载的学习我们可以知道利用点通常在defineClass中，它是从字节码中加载 这个链子鉴于之">
-<meta property="og:type" content="article">
-<meta property="og:title" content="commons-collection 3">
-<meta property="og:url" content="http://example.com/2024/03/21/commons-collection%203/index.html">
-<meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="preCC3和我们刚才调试的CC6有一些不同，CC1和CC6我们可以知道命令执行的方式是Runtime.getRuntime().exec但众所周知Java还可以通过加载任意类来进行恶意行为CC3是基于这个的，所以我今天也花了不少时间来重新学习动态类加载，在初步学习之后的基础上，开始调试CC3 根据动态类加载的学习我们可以知道利用点通常在defineClass中，它是从字节码中加载 这个链子鉴于之">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205210926.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205223112.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205223222.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205224142.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205224252.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205225228.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205230353.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205230716.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205231817.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232054.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232245.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232828.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233125.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233220.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233930.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205234611.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205234727.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205235527.png">
-<meta property="article:published_time" content="2024-03-21T05:06:50.639Z">
-<meta property="article:modified_time" content="2024-03-21T05:02:49.266Z">
-<meta property="article:author" content="fault_li">
-<meta property="article:tag" content="Java">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205210926.png">
-  
-  
-  
-  <title>commons-collection 3 - fault`s blog</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
-
-
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
-  
-
-
-
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/shubiao.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
-
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
-    }
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-  
-
-
-  
-<meta name="generator" content="Hexo 7.2.0"></head>
-
-
-<body>
-  
-
-  <header>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>commons-collection 3 | fault`s blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/bitbug_favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.4"><!-- inject head--><link rel="canonical" href="http://example.com/2024/03/21/commons-collection%203/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="preCC3和我们刚才调试的CC6有一些不同，CC1和CC6我们可以知道命令执行的方式是Runtime.getRuntime().exec但众所周知Java还可以通过加载任意类来进行恶意行为CC3是基于这个的，所以我今天也花了不少时间来重新学习动态类加载，在初步学习之后的基础上，开始调试CC3 根据"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="fault`s blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/bitbug_favicon.ico"><link rel="apple-touch-icon" href="/img/bitbug_favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.4' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
     
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <strong>fault`s blog</strong>
-    </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/" target="_self">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/" target="_self">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/links/" target="_self">
-                <i class="iconfont icon-link-fill"></i>
-                <span>友链</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-  
-
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle" data-typed-text="commons-collection 3"></span>
-          
-        </div>
-
-        
-          
-  <div class="mt-3">
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
     
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
     
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 13:06" pubdate>
-          2024年3月21日 下午
-        </time>
-      </span>
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
     
-  </div>
-
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
         
-          1.4k 字
+                if (name && keyObj[name]) return
         
-      </span>
-    
-
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          12 分钟
-        
-      </span>
-    
-
-    
-    
-  </div>
-
-
-        
-      </div>
-
-      
-    </div>
-  </div>
-</div>
-
-</div>
-
-  </header>
-
-  <main>
-    
-      
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">commons-collection 3</h1>
-            
-            
-              <div class="markdown-body">
-                
-                <h2 id="pre"><a href="#pre" class="headerlink" title="pre"></a>pre</h2><p>CC3和我们刚才调试的CC6有一些不同，CC1和CC6我们可以知道命令执行的方式是<code>Runtime.getRuntime().exec</code>但众所周知Java还可以通过加载任意类来进行恶意行为<br>CC3是基于这个的，所以我今天也花了不少时间来重新学习动态类加载，在初步学习之后的基础上，开始调试CC3</p>
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: {"limit":50,"author":"作者: fault_li","link":"链接: ","source":"来源: fault`s blog","info":"著作权归作者所有。 商业转载请联系作者获得授权，非商业转载请注明出处。"},
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ 美好的一天开启啦",
+            noon: "吃得香才能吃得香（确信）",
+            afternoon: "是fault的午睡和游戏时间~",
+            night: "努力学习ing...",
+            goodnight: "碎觉碎觉 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: false,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/%E6%80%BB%E7%BB%93/">总结<sup>1</sup></a><a href="/tags/Java%E5%90%84%E7%A7%8D%E6%B3%A8%E5%85%A5/">Java各种注入<sup>1</sup></a><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/">域相关<sup>2</sup></a><a href="/tags/Java/">Java<sup>8</sup></a><a href="/tags/IOT/">IOT<sup>1</sup></a><a href="/tags/Web/">Web<sup>1</sup></a><a href="/tags/%E6%AF%94%E8%B5%9Bwp/">比赛wp<sup>1</sup></a><a href="/tags/Crypto/">Crypto<sup>2</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">commons-collection 3</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/" alt="commons-collection 3"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Java</span></a></div></div></div></div><h1 class="post-title">commons-collection 3</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="pre"><a href="#pre" class="headerlink" title="pre"></a>pre</h2><p>CC3和我们刚才调试的CC6有一些不同，CC1和CC6我们可以知道命令执行的方式是<code>Runtime.getRuntime().exec</code>但众所周知Java还可以通过加载任意类来进行恶意行为<br>CC3是基于这个的，所以我今天也花了不少时间来重新学习动态类加载，在初步学习之后的基础上，开始调试CC3</p>
 <p>根据动态类加载的学习我们可以知道利用点通常在defineClass中，它是从字节码中加载</p>
 <p>这个链子鉴于之前学习动态类加载的时候对加载器包括defineClass有相关调试，我就不在这个笔记中过多赘述了</p>
-<h2 id="TemplatesImpl"><a href="#TemplatesImpl" class="headerlink" title="TemplatesImpl"></a>TemplatesImpl</h2><p>本质问题出在这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205210926.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们一路一路往上头找，找到了<br>newTransformer-&gt;getTransletInstance-&gt;defineTransletClasses-&gt;defineClass<br>所以我们开始调试，看看这样的调用链需要满足什么条件<br>首先是这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205223112.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>因为它直接进行了判定，所以我们看看它的构造函数有没有对它赋值<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205223222.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>我们发现是对它的_class不有赋值，这样我们才能进到defineTransletClasses里，然后我们继续跟进<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205224142.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>发现bytecode需要赋值，不能为空，否则会抛出异常<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205224252.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>tfactory要赋值，因为要调用方法<br>所以我们直接反射改<br>但在改bytecodes时候需要注意，所以我们去看看它最后的defineClass<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205225228.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>要传一个一维数组<br>我们目前的代码如下</p>
+<h2 id="TemplatesImpl"><a href="#TemplatesImpl" class="headerlink" title="TemplatesImpl"></a>TemplatesImpl</h2><p>本质问题出在这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205210926.png" alt="image.png"><br>我们一路一路往上头找，找到了<br>newTransformer-&gt;getTransletInstance-&gt;defineTransletClasses-&gt;defineClass<br>所以我们开始调试，看看这样的调用链需要满足什么条件<br>首先是这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205223112.png" alt="image.png"><br>因为它直接进行了判定，所以我们看看它的构造函数有没有对它赋值<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205223222.png" alt="image.png"></p>
+<p>我们发现是对它的_class不有赋值，这样我们才能进到defineTransletClasses里，然后我们继续跟进<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205224142.png" alt="image.png"><br>发现bytecode需要赋值，不能为空，否则会抛出异常<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205224252.png" alt="image.png"><br>tfactory要赋值，因为要调用方法<br>所以我们直接反射改<br>但在改bytecodes时候需要注意，所以我们去看看它最后的defineClass<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205225228.png" alt="image.png"><br>要传一个一维数组<br>我们目前的代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">TemplatesImpl</span> <span class="hljs-variable">templates</span> <span class="hljs-operator">=</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">TemplatesImpl</span>();  <br><span class="hljs-type">Class</span> <span class="hljs-variable">templatesClazz</span> <span class="hljs-operator">=</span> templates.getClass();  <br><span class="hljs-type">Field</span> <span class="hljs-variable">nameField</span> <span class="hljs-operator">=</span> templatesClazz.getDeclaredField(<span class="hljs-string">&quot;_name&quot;</span>);  <br>nameField.setAccessible(<span class="hljs-literal">true</span>);  <br>nameField.set(templates,<span class="hljs-string">&quot;aaaa&quot;</span>);  <br><span class="hljs-type">Field</span> <span class="hljs-variable">bytecodeField</span> <span class="hljs-operator">=</span> templatesClazz.getDeclaredField(<span class="hljs-string">&quot;_bytecodes&quot;</span>);  <br>bytecodeField.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="hljs-string">&quot;D:\\codefile\\java\\out\\Test.class&quot;</span>));  <br><span class="hljs-type">byte</span>[][] codes = &#123;code&#125;;  <br>nameField.set(templates,codes);<br></code></pre></td></tr></table></figure>
-<p>那么tfactory呢，我们看这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205230353.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它是个不可被序列化的值，所以我们这样子改一点用没有<br>但是为了测试代码，还是给它赋值吧<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205230716.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>目前预期就是一旦我们运行代码，就会加载我们刚才编写的恶意类从而弹出计算器，那我们现在试试看<br>好嘛，报错了<br>空指针错误<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205231817.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>是在defineTransletClasses这里出了问题，我们进去然后打个断点开始调试</p>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232054.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>安然无恙的走到这里了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232245.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>已经加载成功了喵，为什么<br>根据报错我们可以找到问题在这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232828.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>也就是这个_auxClasses参数是空的，我们有两个方法，第一个就是直接给_auxClasses赋值，第二个就是满足那个if然后进去，但是如果不满足if它会是-1，还是过不了这个判断条件<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233125.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>所以它又会报另一个错，那么我们赋值的办法就行不通了<br>那么我们怎么办，只能满足那个if条件进去了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233220.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>也就是我们执行代码的类的父类 要是这个东西<br>那么我们改写我们的Test.class<br>但是由于这个东西是一个抽象类，我们直接继承会报错，我们需要实现它的抽象方法<br>于是我们的测试代码需要写成这样</p>
+<p>那么tfactory呢，我们看这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205230353.png" alt="image.png"><br>它是个不可被序列化的值，所以我们这样子改一点用没有<br>但是为了测试代码，还是给它赋值吧<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205230716.png" alt="image.png"><br>目前预期就是一旦我们运行代码，就会加载我们刚才编写的恶意类从而弹出计算器，那我们现在试试看<br>好嘛，报错了<br>空指针错误<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205231817.png" alt="image.png"><br>是在defineTransletClasses这里出了问题，我们进去然后打个断点开始调试</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232054.png" alt="image.png"><br>安然无恙的走到这里了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232245.png" alt="image.png"><br>已经加载成功了喵，为什么<br>根据报错我们可以找到问题在这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205232828.png" alt="image.png"><br>也就是这个_auxClasses参数是空的，我们有两个方法，第一个就是直接给_auxClasses赋值，第二个就是满足那个if然后进去，但是如果不满足if它会是-1，还是过不了这个判断条件<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233125.png" alt="image.png"><br>所以它又会报另一个错，那么我们赋值的办法就行不通了<br>那么我们怎么办，只能满足那个if条件进去了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233220.png" alt="image.png"><br>也就是我们执行代码的类的父类 要是这个东西<br>那么我们改写我们的Test.class<br>但是由于这个东西是一个抽象类，我们直接继承会报错，我们需要实现它的抽象方法<br>于是我们的测试代码需要写成这样</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> org.example;  <br>  <br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.DOM;  <br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.TransletException;  <br><span class="hljs-keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;  <br><span class="hljs-keyword">import</span> com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;  <br><span class="hljs-keyword">import</span> com.sun.org.apache.xml.internal.serializer.SerializationHandler;  <br>  <br><span class="hljs-keyword">import</span> java.io.IOException;  <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Test</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractTranslet</span>&#123;  <br>    <span class="hljs-keyword">static</span> &#123;  <br>        <span class="hljs-keyword">try</span> &#123;  <br>            Runtime.getRuntime().exec(<span class="hljs-string">&quot;calc&quot;</span>);  <br>        &#125; <span class="hljs-keyword">catch</span> (IOException e) &#123;  <br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);  <br>        &#125;  <br>    &#125;  <br>  <br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">transform</span><span class="hljs-params">(DOM document, SerializationHandler[] handlers)</span> <span class="hljs-keyword">throws</span> TransletException &#123;  <br>  <br>    &#125;  <br>  <br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">transform</span><span class="hljs-params">(DOM document, DTMAxisIterator iterator, SerializationHandler handler)</span> <span class="hljs-keyword">throws</span> TransletException &#123;  <br>  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
-<p>我们再次测试<br>看到这绷不住了哈哈哈<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233930.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我到底弹了多少次计算器啊哈哈哈哈<br>发个朋友圈纪念一下哈哈哈哈，太好笑了这个</p>
+<p>我们再次测试<br>看到这绷不住了哈哈哈<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205233930.png" alt="image.png"><br>我到底弹了多少次计算器啊哈哈哈哈<br>发个朋友圈纪念一下哈哈哈哈，太好笑了这个</p>
 <h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><p>把它和CC1的ChainedTransformer进行一个联动<br>改成这样</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(templates),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;newTransformer&quot;</span>,<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>),  <br>&#125;;  <br>ChainedTransformer chainedTransformer=(ChainedTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);  <br>chainedTransformer.transform(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205234611.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>也可以执行<br>所以我们直接给CC1后半段提溜过来<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205234727.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>嗯！宣</p>
-<h2 id="yso链子"><a href="#yso链子" class="headerlink" title="yso链子"></a>yso链子</h2><p>但是yso用了另外一个类，InstantiateTransformer，这个类着实比较陌生，进去看看它的transform方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205235527.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>代码功能就是如果参数是一个class，那么就获取他的构造器和它的构造函数<br>那么我们直接这样构造</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205234611.png" alt="image.png"><br>也可以执行<br>所以我们直接给CC1后半段提溜过来<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205234727.png" alt="image.png"><br>嗯！宣</p>
+<h2 id="yso链子"><a href="#yso链子" class="headerlink" title="yso链子"></a>yso链子</h2><p>但是yso用了另外一个类，InstantiateTransformer，这个类着实比较陌生，进去看看它的transform方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205235527.png" alt="image.png"><br>代码功能就是如果参数是一个class，那么就获取他的构造器和它的构造函数<br>那么我们直接这样构造</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">InstantiateTransformer</span> <span class="hljs-variable">instantiateTransformer</span> <span class="hljs-operator">=</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">InstantiateTransformer</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Templates.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;templates&#125;);  <br>instantiateTransformer.transform(TrAXFilter.class);<br></code></pre></td></tr></table></figure>
 <p>然后我们把transform去掉<br>和CC1连起来<br>草，刚才狠狠报错，难绷<br>因为我刚才改写的时候突然脑袋抽了，因为之前我们合并的时候没用到chainedTransformer，所以我就直接把decorate里的类改成了instantiateTransformer，但刚才我连着chainedTransformer一起的时候先是忘了开头需要用ConstantTransformer，又是忘记改decorate，不过最后终于解决了，最后代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">TemplatesImpl</span> <span class="hljs-variable">templates</span> <span class="hljs-operator">=</span>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">TemplatesImpl</span>();  <br><span class="hljs-type">Class</span> <span class="hljs-variable">templatesClazz</span> <span class="hljs-operator">=</span> templates.getClass();  <br>  <br>  <br><span class="hljs-type">Field</span> <span class="hljs-variable">nameField</span> <span class="hljs-operator">=</span> templatesClazz.getDeclaredField(<span class="hljs-string">&quot;_name&quot;</span>);  <br>nameField.setAccessible(<span class="hljs-literal">true</span>);  <br>nameField.set(templates,<span class="hljs-string">&quot;aaaa&quot;</span>);  <br>  <br>  <br><span class="hljs-type">Field</span> <span class="hljs-variable">bytecodeField</span> <span class="hljs-operator">=</span> templatesClazz.getDeclaredField(<span class="hljs-string">&quot;_bytecodes&quot;</span>);  <br>bytecodeField.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="hljs-string">&quot;D:\\codefile\\java\\out\\Test.class&quot;</span>));  <br><span class="hljs-type">byte</span>[][] codes = &#123;code&#125;;  <br>bytecodeField.set(templates,codes);  <br>  <br>  <br><span class="hljs-type">Field</span> <span class="hljs-variable">tfactoryField</span> <span class="hljs-operator">=</span> templatesClazz.getDeclaredField(<span class="hljs-string">&quot;_tfactory&quot;</span>);  <br>tfactoryField.setAccessible(<span class="hljs-literal">true</span>);  <br>tfactoryField.set(templates,<span class="hljs-keyword">new</span> <span class="hljs-title class_">TransformerFactoryImpl</span>());<br><br>Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(TrAXFilter.class),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InstantiateTransformer</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Templates.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;templates&#125;),  <br>&#125;;  <br>  <br>ChainedTransformer chainedTransformer=(ChainedTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br><br>HashMap&lt;Object,Object&gt; map =  <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();  <br>  <br>Map&lt;Object,Object&gt; lazyMap = LazyMap.decorate(map,chainedTransformer);  <br>  <br><span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);  <br><span class="hljs-type">Constructor</span> <span class="hljs-variable">annotationInvocationHandlerConstructor</span> <span class="hljs-operator">=</span> c.getDeclaredConstructor(Class.class,Map.class);  <br>annotationInvocationHandlerConstructor.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">InvocationHandler</span> <span class="hljs-variable">lazymapInvocationHandler</span> <span class="hljs-operator">=</span> (InvocationHandler) annotationInvocationHandlerConstructor.newInstance(Override.class,lazyMap);  <br>  <br><span class="hljs-type">Map</span> <span class="hljs-variable">mapProxy</span> <span class="hljs-operator">=</span> (Map) Proxy.newProxyInstance(LazyMap.class.getClassLoader(),<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Map.class&#125;,lazymapInvocationHandler);  <br>  <br><span class="hljs-type">Object</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span>  annotationInvocationHandlerConstructor.newInstance(Override.class,mapProxy);  <br>serialize(o);  <br>unserialize(<span class="hljs-string">&quot;ser.bin&quot;</span>);<br></code></pre></td></tr></table></figure>
 <p>呜呜呜终于呜呜呜<br>呜呜呜呜呜呜呜以为快完了然后报了一大堆错然后改改改的感觉呜呜呜呜，当计算器弹出来的时候真的好开心呜呜呜</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src= "/img/loading.avif" data-lazy-src="/img/bitbug_favicon.ico"></a><div class="post-copyright__author_name">fault`s blog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">fault`s blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Java<span class="tagsPageCount">8</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/03/21/commons-collections%202/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">commons-collections 2</div></div></a></div><div class="next-post pull-right"><a href="/2024/03/21/%E5%8A%A8%E6%80%81%E7%B1%BB%E5%8A%A0%E8%BD%BD/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">动态类加载</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="solitude fa-solid fa-star"></i><span>喜欢这篇的人也看了</span><div class="relatedPosts-link"><a onclick="event.preventDefault(); toRandomPost();" href="javascript:void(0);" rel="external nofollow" data-pjax-state="">随便逛逛</a></div></div><div class="relatedPosts-list"><div><a href="/2024/03/21/commonscollections-1/" title="commonscollections-1"><img class="cover" src= "/img/loading.avif" data-lazy-src="/var(--default-bg-color)" alt="cover"><div class="content is-center"><div class="title">commonscollections-1</div></div></a></div><div><a href="/2024/03/21/commons-collections%206/" title="commons-collections 6"><img class="cover" src= "/img/loading.avif" data-lazy-src="/var(--default-bg-color)" alt="cover"><div class="content is-center"><div class="title">commons-collections 6</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg"><div class="avatar-sticker"><img class="avatar-sticker-img" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg" alt="心情贴纸"></div></div><div class="author-info__description_group"><div class="author-info__description">fault的小天地喵</div><div class="author-info__description2">I believe you can find knowledge and tutorials here that will be useful to you.</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">fault_li</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/fault123" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/1329819902" title="Bilibili"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2"><img alt="工坊wp-RSA2" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2">工坊wp-RSA2</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp"><img alt="nss-工坊wp" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp">nss-工坊wp</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘"><img alt="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘">DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习"><img alt="NTLM认证学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习">NTLM认证学习</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习"><img alt="kerberos协议学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习">kerberos协议学习</span></div></div></div></div></div></div></main><footer id="footer"><div id="st-footer-bar"><div class="footer-logo"><span>fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span></div><div class="footer-bar-description">Articles from Ever Fu.</div><a class="footer-bar-link" href="/about/">Learn more</a></div><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2024 By&nbsp;<a class="footer-bar-link" href="/">fault_li</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.4"></script><script src="/js/main.js?v=2.0.4"></script><script src="/js/third_party/waterfall.min.js?v=2.0.4"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.4"></script><script>dark()
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script><script>var meting_api = 'https://meting.qjqq.cn/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/meting/2.0.1/Meting.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
 
-                
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Java/" class="print-no-link">#Java</a>
-      
-    </div>
-  
-</div>
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
 
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
 
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>commons-collection 3</div>
-      <div>http://example.com/2024/03/21/commons-collection 3/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>fault_li</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2024年3月21日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2024/03/21/commons-collections%202/" title="commons-collections 2">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">commons-collections 2</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2024/03/21/%E5%8A%A8%E6%80%81%E7%B1%BB%E5%8A%A0%E8%BD%BD/" title="动态类加载">
-                        <span class="hidden-mobile">动态类加载</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-          </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
-
-    
-
-    
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://github.com/fault123" target="_blank" rel="nofollow noopener"><span>fault</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
-  
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
     })
-  </script>
 
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
+})
 
-
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
-      }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
-    })(window, document);
-  </script>
-
-
-
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    window.tocbot.init(Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc));
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
     }
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-      }
-    });
-  });
-</script>
-
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
-    };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
     }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
-</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
-</script>
-
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/js/local-search.js" ></script>
-
-
-
-
-  
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/Cherry.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
-
-
-
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/js/boot.js" ></script>
-
-
-  
-
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
-</html>
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body></html><script>const posts=["2024/07/28/工坊wp-RSA2/","2024/07/26/工坊wp-RSA1/","2024/07/23/DASCTF 2024 七月赛 web Sanic's revenge&&ciscn 2024 sanic的复盘/","2024/03/21/NTLM认证学习/","2024/03/21/kerberos协议学习/","2024/03/21/2023/","2024/03/21/NSSCTF IOT题目复现/","2024/03/21/commonscollections-1/","2024/03/21/commons-collections 6/","2024/03/21/commons-collections 4/","2024/03/21/commons-collections 2/","2024/03/21/commons-collection 3/","2024/03/21/动态类加载/","2024/03/21/动态代理/","2024/03/21/URLDNS/","2024/03/21/Tomcat源码初识（tomcat流程）/","2024/03/21/hello-world/","2024/02/18/EL表达式注入/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

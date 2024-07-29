@@ -1,351 +1,143 @@
-
-
-<!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
-
-
-
-<head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/douni.jpg">
-  <link rel="icon" href="/img/douni.jpg">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="fault_li">
-  <meta name="keywords" content="">
-  
-    <meta name="description" content="我们尝试编写Person类如下  各类方法调用情况无参方法 有参方法 静态方法 赋值 &#x3D;&#x3D;所以说Java的类在初始化的时候就会调用静态代码块&#x3D;&#x3D; 获取类所以class关键字只对Java类进行加载，并不会进行初始化 &#x3D;&#x3D;类在实例化的时候会调用构造代码块&#x3D;&#x3D; 动态加载类Class.forName()我们跟进去看看这里没有，">
-<meta property="og:type" content="article">
-<meta property="og:title" content="动态类加载">
-<meta property="og:url" content="http://example.com/2024/03/21/%E5%8A%A8%E6%80%81%E7%B1%BB%E5%8A%A0%E8%BD%BD/index.html">
-<meta property="og:site_name" content="fault&#96;s blog">
-<meta property="og:description" content="我们尝试编写Person类如下  各类方法调用情况无参方法 有参方法 静态方法 赋值 &#x3D;&#x3D;所以说Java的类在初始化的时候就会调用静态代码块&#x3D;&#x3D; 获取类所以class关键字只对Java类进行加载，并不会进行初始化 &#x3D;&#x3D;类在实例化的时候会调用构造代码块&#x3D;&#x3D; 动态加载类Class.forName()我们跟进去看看这里没有，">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205180824.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205181511.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205181926.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205182204.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185143.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185404.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185545.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185837.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185859.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185954.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190036.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190347.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190846.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191116.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191916.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191926.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192150.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192252.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192416.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192717.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192918.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192951.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193117.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193320.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193348.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194716.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194805.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194919.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195155.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195222.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195406.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195503.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195509.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195559.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195905.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205204130.png">
-<meta property="og:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205204403.png">
-<meta property="article:published_time" content="2024-03-21T05:06:45.856Z">
-<meta property="article:modified_time" content="2024-03-21T05:04:57.814Z">
-<meta property="article:author" content="fault_li">
-<meta property="article:tag" content="Java">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205180824.png">
-  
-  
-  
-  <title>动态类加载 - fault`s blog</title>
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
-
-
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
-
-  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
-
-
-
-<!-- 主题依赖的图标库，不要自行修改 -->
-<!-- Do not modify the link that theme dependent icons -->
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
-
-
-
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
-
-
-<link  rel="stylesheet" href="/css/main.css" />
-
-
-  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
-  
-    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
-  
-
-
-
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/shubiao.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/scroll.css">
-<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/gradient.css">
-
-
-
-  <script id="fluid-configs">
-    var Fluid = window.Fluid || {};
-    Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
-
-    if (CONFIG.web_analytics.follow_dnt) {
-      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
-    }
-  </script>
-  <script  src="/js/utils.js" ></script>
-  <script  src="/js/color-schema.js" ></script>
-  
-
-
-  
-<meta name="generator" content="Hexo 7.2.0"></head>
-
-
-<body>
-  
-
-  <header>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>动态类加载 | fault`s blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="/img/bitbug_favicon.ico"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.4"><!-- inject head--><link rel="canonical" href="http://example.com/2024/03/21/%E5%8A%A8%E6%80%81%E7%B1%BB%E5%8A%A0%E8%BD%BD/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"><!-- fancybox ui--><!-- katex--><!-- Open Graph--><meta name="description" content="我们尝试编写Person类如下 各类方法调用情况无参方法 有参方法 静态方法 赋值 &amp;#x3D;&amp;#x3D;所以说Java的类在初始化的时候就会调用静态代码块&amp;#x3D;&amp;#x3D; 获取类所以class关键字只对Java类进行加载，并不会进行初始化 &amp;#x3D;&amp;#x3D;类在实例化的时候会调用"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="fault`s blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="/img/bitbug_favicon.ico"><link rel="apple-touch-icon" href="/img/bitbug_favicon.ico" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.4' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
     
-
-<div class="header-inner" style="height: 70vh;">
-  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-      <strong>fault`s blog</strong>
-    </a>
-
-    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <div class="animated-icon"><span></span><span></span><span></span></div>
-    </button>
-
-    <!-- Collapsible content -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav ml-auto text-center">
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/" target="_self">
-                <i class="iconfont icon-home-fill"></i>
-                <span>首页</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/archives/" target="_self">
-                <i class="iconfont icon-archive-fill"></i>
-                <span>归档</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/categories/" target="_self">
-                <i class="iconfont icon-category-fill"></i>
-                <span>分类</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/tags/" target="_self">
-                <i class="iconfont icon-tags-fill"></i>
-                <span>标签</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/about/" target="_self">
-                <i class="iconfont icon-user-fill"></i>
-                <span>关于</span>
-              </a>
-            </li>
-          
-        
-          
-          
-          
-          
-            <li class="nav-item">
-              <a class="nav-link" href="/links/" target="_self">
-                <i class="iconfont icon-link-fill"></i>
-                <span>友链</span>
-              </a>
-            </li>
-          
-        
-        
-          <li class="nav-item" id="search-btn">
-            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
-              <i class="iconfont icon-search"></i>
-            </a>
-          </li>
-          
-        
-        
-          <li class="nav-item" id="color-toggle-btn">
-            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
-              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-</nav>
-
-  
-
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle" data-typed-text="动态类加载"></span>
-          
-        </div>
-
-        
-          
-  <div class="mt-3">
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
     
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
     
-      <span class="post-meta">
-        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2024-03-21 13:06" pubdate>
-          2024年3月21日 下午
-        </time>
-      </span>
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
     
-  </div>
-
-  <div class="mt-1">
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-chart"></i>
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
         
-          1k 字
+                if (name && keyObj[name]) return
         
-      </span>
-    
-
-    
-      <span class="post-meta mr-2">
-        <i class="iconfont icon-clock-fill"></i>
-        
-        
-        
-          9 分钟
-        
-      </span>
-    
-
-    
-    
-  </div>
-
-
-        
-      </div>
-
-      
-    </div>
-  </div>
-</div>
-
-</div>
-
-  </header>
-
-  <main>
-    
-      
-
-<div class="container-fluid nopadding-x">
-  <div class="row nomargin-x">
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-
-    </div>
-
-    <div class="col-lg-8 nopadding-x-md">
-      <div class="container nopadding-x-md" id="board-ctn">
-        <div id="board">
-          <article class="post-content mx-auto">
-            <h1 id="seo-header">动态类加载</h1>
-            
-            
-              <div class="markdown-body">
-                
-                <p>我们尝试编写Person类如下<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205180824.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205181511.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h1 id="各类方法调用情况"><a href="#各类方法调用情况" class="headerlink" title="各类方法调用情况"></a>各类方法调用情况</h1><h3 id="无参方法"><a href="#无参方法" class="headerlink" title="无参方法"></a>无参方法</h3><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205181926.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="有参方法"><a href="#有参方法" class="headerlink" title="有参方法"></a>有参方法</h2><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205182204.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h2><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185143.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="赋值"><a href="#赋值" class="headerlink" title="赋值"></a>赋值</h2><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185404.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: {"limit":50,"author":"作者: fault_li","link":"链接: ","source":"来源: fault`s blog","info":"著作权归作者所有。 商业转载请联系作者获得授权，非商业转载请注明出处。"},
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ 美好的一天开启啦",
+            noon: "吃得香才能吃得香（确信）",
+            afternoon: "是fault的午睡和游戏时间~",
+            night: "努力学习ing...",
+            goodnight: "碎觉碎觉 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: false,
+    lure: false,
+    expire: false,
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: false,
+    comment: false,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/%E6%80%BB%E7%BB%93/">总结<sup>1</sup></a><a href="/tags/Java%E5%90%84%E7%A7%8D%E6%B3%A8%E5%85%A5/">Java各种注入<sup>1</sup></a><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/">域相关<sup>2</sup></a><a href="/tags/Java/">Java<sup>8</sup></a><a href="/tags/IOT/">IOT<sup>1</sup></a><a href="/tags/Web/">Web<sup>1</sup></a><a href="/tags/%E6%AF%94%E8%B5%9Bwp/">比赛wp<sup>1</sup></a><a href="/tags/Crypto/">Crypto<sup>2</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">动态类加载</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/categories/"><i class="solitude  fas fa-clone"></i><span>Categories</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/moments/"><i class="solitude  fas fa-wifi"></i><span>Moments</span></a></li><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li><li><a class="site-page child" href="javascript:travelling()"><i class="solitude  fas fa-gift"></i><span>Treasure</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Myself</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/equipment/"><i class="solitude  fas fa-laptop"></i><span>Equipment</span></a></li><li><a class="site-page child" href="/tlink/"><i class="solitude  fas fa-toolbox"></i><span>Toobox</span></a></li><li><a class="site-page child" href="/music/"><i class="solitude  fas fa-music"></i><span>Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/" alt="动态类加载"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><span class="tags-name tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Java</span></a></div></div></div></div><h1 class="post-title">动态类加载</h1><div id="post-meta"><div class="meta-secondline"></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>我们尝试编写Person类如下<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205180824.png" alt="image.png"></p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205181511.png" alt="image.png"></p>
+<h1 id="各类方法调用情况"><a href="#各类方法调用情况" class="headerlink" title="各类方法调用情况"></a>各类方法调用情况</h1><h3 id="无参方法"><a href="#无参方法" class="headerlink" title="无参方法"></a>无参方法</h3><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205181926.png" alt="image.png"></p>
+<h2 id="有参方法"><a href="#有参方法" class="headerlink" title="有参方法"></a>有参方法</h2><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205182204.png" alt="image.png"></p>
+<h2 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h2><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185143.png" alt="image.png"></p>
+<h2 id="赋值"><a href="#赋值" class="headerlink" title="赋值"></a>赋值</h2><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185404.png" alt="image.png"></p>
 <p>&#x3D;&#x3D;所以说Java的类在初始化的时候就会调用静态代码块&#x3D;&#x3D;</p>
-<h2 id="获取类"><a href="#获取类" class="headerlink" title="获取类"></a>获取类</h2><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185545.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>所以class关键字只对Java类进行加载，并不会进行初始化</p>
+<h2 id="获取类"><a href="#获取类" class="headerlink" title="获取类"></a>获取类</h2><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185545.png" alt="image.png"><br>所以class关键字只对Java类进行加载，并不会进行初始化</p>
 <p>&#x3D;&#x3D;类在实例化的时候会调用构造代码块&#x3D;&#x3D;</p>
-<h2 id="动态加载类"><a href="#动态加载类" class="headerlink" title="动态加载类"></a>动态加载类</h2><h3 id="Class-forName"><a href="#Class-forName" class="headerlink" title="Class.forName()"></a>Class.forName()</h3><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185837.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们跟进去看看<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185859.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这里没有，我们可以看看它重载的另一种方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185954.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它是否初始化的值是在这里确定的<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190036.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>也就是说它默认是初始化了的<br>我们尝试使用这个重载方法进行观察<br>代码如下</p>
+<h2 id="动态加载类"><a href="#动态加载类" class="headerlink" title="动态加载类"></a>动态加载类</h2><h3 id="Class-forName"><a href="#Class-forName" class="headerlink" title="Class.forName()"></a>Class.forName()</h3><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185837.png" alt="image.png"><br>我们跟进去看看<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185859.png" alt="image.png"><br>这里没有，我们可以看看它重载的另一种方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205185954.png" alt="image.png"><br>它是否初始化的值是在这里确定的<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190036.png" alt="image.png"><br>也就是说它默认是初始化了的<br>我们尝试使用这个重载方法进行观察<br>代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ClassLoader</span> <span class="hljs-variable">cl</span> <span class="hljs-operator">=</span> ClassLoader.getSystemClassLoader();  <br>Class.forName(<span class="hljs-string">&quot;Person&quot;</span>,<span class="hljs-literal">false</span>,cl);<br></code></pre></td></tr></table></figure>
-<p>这样就被认为是没有初始化后的<br>输出如下<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190347.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p>在这里我们用了一个类加载器，那么如果我们使用这个类加载器去加载类，也就是用它的loadClass方法，它是否会对类进行初始化呢<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190846.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们发现输出为空，那么很明显loadClass方法不会对类进行初始化</p>
+<p>这样就被认为是没有初始化后的<br>输出如下<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190347.png" alt="image.png"></p>
+<p>在这里我们用了一个类加载器，那么如果我们使用这个类加载器去加载类，也就是用它的loadClass方法，它是否会对类进行初始化呢<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205190846.png" alt="image.png"><br>我们发现输出为空，那么很明显loadClass方法不会对类进行初始化</p>
 <p>我们来瞅瞅类加载的具体实现</p>
-<p>我们直接打断点调到loadClass方法里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191116.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>但如果我们打印cl变量就知道，这个加载器是一个app类加载器，我们去这个位置找找它的loadClass方法</p>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191916.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191926.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>但是这个方法是两个参数的，并不符合我们的调用<br>于是它就去了它的父类，也就走到了我们刚才强制步入的那个loadClass里<br>但是它又调用了两个参数的loadClass，所以下一步肯定又是回来<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192150.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后走到这里，它又调用了它父类的loadClass<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192252.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后check它是否被加载过<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192416.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后看它的父类是否存在，如果有的话就调用它父类的，如果没有就会去BootstrapClass<br>我们可以看到在这里的时候它的parent不是null<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192717.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>但是当我们继续往下走然后步入<br>它又回到了这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192918.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这时如果我们再走到parent这里<img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192951.png" srcset="/img/loading.gif" lazyload alt="image.png">就会发现parent成null了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193117.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>那是因为ExtClassLoader里就没有loadClass方法，所以它开始找BootstrapClass，然后还是没有找到<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193320.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们在这里继续跟进去<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193348.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>莫名其妙到了URLClassLoader，但我们去查的时候会发现无论是appClassLoader还是ExtClassLoader，它们都没有findClass这个方法<br>所以就去找了他俩的父类<br>然后我们走到了这里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194716.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们发现它是在<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194805.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>这个时候完成的类加载<br>我们跟进去发现它又调用了另一个defineClass<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194919.png" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195155.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它又跑到SecureClassLoader里了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195222.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>显而易见的又是父类<br>然后它又调用了另一个重载的defineClass<br>最后发现它又回到了ClassLoader里<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195406.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>我们重点关注这个<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195503.png" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195509.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>发现它是一个native方法，也就是在这里完成了类加载<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195559.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>从这里的返回值c也就能很好的看出来了<br>然后层层返回，就结束了<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195905.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>我们直接打断点调到loadClass方法里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191116.png" alt="image.png"><br>但如果我们打印cl变量就知道，这个加载器是一个app类加载器，我们去这个位置找找它的loadClass方法</p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191916.png" alt="image.png"></p>
+<p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205191926.png" alt="image.png"><br>但是这个方法是两个参数的，并不符合我们的调用<br>于是它就去了它的父类，也就走到了我们刚才强制步入的那个loadClass里<br>但是它又调用了两个参数的loadClass，所以下一步肯定又是回来<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192150.png" alt="image.png"><br>然后走到这里，它又调用了它父类的loadClass<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192252.png" alt="image.png"><br>然后check它是否被加载过<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192416.png" alt="image.png"><br>然后看它的父类是否存在，如果有的话就调用它父类的，如果没有就会去BootstrapClass<br>我们可以看到在这里的时候它的parent不是null<img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192717.png" alt="image.png"><br>但是当我们继续往下走然后步入<br>它又回到了这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192918.png" alt="image.png"><br>这时如果我们再走到parent这里<img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205192951.png" alt="image.png">就会发现parent成null了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193117.png" alt="image.png"><br>那是因为ExtClassLoader里就没有loadClass方法，所以它开始找BootstrapClass，然后还是没有找到<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193320.png" alt="image.png"><br>我们在这里继续跟进去<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205193348.png" alt="image.png"><br>莫名其妙到了URLClassLoader，但我们去查的时候会发现无论是appClassLoader还是ExtClassLoader，它们都没有findClass这个方法<br>所以就去找了他俩的父类<br>然后我们走到了这里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194716.png" alt="image.png"><br>我们发现它是在<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194805.png" alt="image.png"><br>这个时候完成的类加载<br>我们跟进去发现它又调用了另一个defineClass<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205194919.png" alt="image.png"><br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195155.png" alt="image.png"><br>它又跑到SecureClassLoader里了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195222.png" alt="image.png"><br>显而易见的又是父类<br>然后它又调用了另一个重载的defineClass<br>最后发现它又回到了ClassLoader里<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195406.png" alt="image.png"><br>我们重点关注这个<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195503.png" alt="image.png"><br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195509.png" alt="image.png"><br>发现它是一个native方法，也就是在这里完成了类加载<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195559.png" alt="image.png"><br>从这里的返回值c也就能很好的看出来了<br>然后层层返回，就结束了<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205195905.png" alt="image.png"></p>
 <p>继承关系如下：<br>ClassLoader-&gt;SecureClassLoader-&gt;URLClassLoader-&gt;AppClassLoader<br>调用关系<br>loadClass-&gt;findClass-&gt;defineClass(从字节码加载)</p>
 <h2 id="URLClassLoader任意类加载"><a href="#URLClassLoader任意类加载" class="headerlink" title="URLClassLoader任意类加载"></a>URLClassLoader任意类加载</h2><p>我直接用我最开始学Java语法时候生成的.class文件了</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">URLClassLoader</span> <span class="hljs-variable">urlClassLoader</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">URLClassLoader</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>[]&#123;<span class="hljs-keyword">new</span> <span class="hljs-title class_">URL</span>(<span class="hljs-string">&quot;file:///D:\\codefile\\java\\&quot;</span>)&#125;);  <br>Class&lt;?&gt; gongyueshu = urlClassLoader.loadClass(<span class="hljs-string">&quot;gongyueshu&quot;</span>);  <br>gongyueshu.newInstance();<br></code></pre></td></tr></table></figure>
@@ -353,361 +145,54 @@
 <h2 id="defineClass加载"><a href="#defineClass加载" class="headerlink" title="defineClass加载"></a>defineClass加载</h2><p>代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Method</span> <span class="hljs-variable">defineClassMethod</span> <span class="hljs-operator">=</span> ClassLoader.class.getDeclaredMethod(<span class="hljs-string">&quot;defineClass&quot;</span>,String.class,<span class="hljs-type">byte</span>[].class,<span class="hljs-type">int</span>.class,<span class="hljs-type">int</span>.class);  <br>defineClassMethod.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="hljs-string">&quot;D:\\codefile\\java\\gongyueshu.class&quot;</span>));  <br><span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> (Class) defineClassMethod.invoke(cl,<span class="hljs-string">&quot;gongyueshu&quot;</span>,code,<span class="hljs-number">0</span>,code.length);  <br>c.newInstance();<br></code></pre></td></tr></table></figure>
 <p>急了，写ClassLoader的时候选错包了，运行好几次才发现跑util下去了，应该选java.lang的那个</p>
-<h2 id="unsafe-defineClass字节码加载（spring中可以直接生成"><a href="#unsafe-defineClass字节码加载（spring中可以直接生成" class="headerlink" title="unsafe.defineClass字节码加载（spring中可以直接生成"></a>unsafe.defineClass字节码加载（spring中可以直接生成</h2><p><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205204130.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>它里面也有一个defineClass方法<br><img src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205204403.png" srcset="/img/loading.gif" lazyload alt="image.png"><br>最终代码如下</p>
+<h2 id="unsafe-defineClass字节码加载（spring中可以直接生成"><a href="#unsafe-defineClass字节码加载（spring中可以直接生成" class="headerlink" title="unsafe.defineClass字节码加载（spring中可以直接生成"></a>unsafe.defineClass字节码加载（spring中可以直接生成</h2><p><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205204130.png" alt="image.png"><br>它里面也有一个defineClass方法<br><img src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240205204403.png" alt="image.png"><br>最终代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Class</span> <span class="hljs-variable">c</span> <span class="hljs-operator">=</span> Unsafe.class;  <br><span class="hljs-type">Field</span> <span class="hljs-variable">unsafeMethod</span> <span class="hljs-operator">=</span> c.getDeclaredField(<span class="hljs-string">&quot;theUnsafe&quot;</span>);  <br>unsafeMethod.setAccessible(<span class="hljs-literal">true</span>);  <br><span class="hljs-type">Unsafe</span> <span class="hljs-variable">unsafe</span> <span class="hljs-operator">=</span>(Unsafe) unsafeMethod.get(<span class="hljs-literal">null</span>);  <br><span class="hljs-type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="hljs-string">&quot;D:\\codefile\\java\\gongyueshu.class&quot;</span>));  <br>unsafe.defineClass(<span class="hljs-string">&quot;gongyueshu&quot;</span>,code,<span class="hljs-number">0</span>,code.length,cl,<span class="hljs-literal">null</span>);<br></code></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src= "/img/loading.avif" data-lazy-src="/img/bitbug_favicon.ico"></a><div class="post-copyright__author_name">fault`s blog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">fault`s blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/"><span class="tags-punctuation"><i class="solitude fa-solid fa-hashtag"></i>Java<span class="tagsPageCount">8</span></span></a></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/03/21/commons-collection%203/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">commons-collection 3</div></div></a></div><div class="next-post pull-right"><a href="/2024/03/21/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">动态代理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="solitude fa-solid fa-star"></i><span>喜欢这篇的人也看了</span><div class="relatedPosts-link"><a onclick="event.preventDefault(); toRandomPost();" href="javascript:void(0);" rel="external nofollow" data-pjax-state="">随便逛逛</a></div></div><div class="relatedPosts-list"><div><a href="/2024/03/21/commonscollections-1/" title="commonscollections-1"><img class="cover" src= "/img/loading.avif" data-lazy-src="/var(--default-bg-color)" alt="cover"><div class="content is-center"><div class="title">commonscollections-1</div></div></a></div><div><a href="/2024/03/21/commons-collections%206/" title="commons-collections 6"><img class="cover" src= "/img/loading.avif" data-lazy-src="/var(--default-bg-color)" alt="cover"><div class="content is-center"><div class="title">commons-collections 6</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg"><div class="avatar-sticker"><img class="avatar-sticker-img" src= "/img/loading.avif" data-lazy-src="/img/douni.jpg" alt="心情贴纸"></div></div><div class="author-info__description_group"><div class="author-info__description">fault的小天地喵</div><div class="author-info__description2">I believe you can find knowledge and tutorials here that will be useful to you.</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">fault_li</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/fault123" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/1329819902" title="Bilibili"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2"><img alt="工坊wp-RSA2" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2">工坊wp-RSA2</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp"><img alt="nss-工坊wp" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/" title="nss-工坊wp">nss-工坊wp</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘"><img alt="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic's%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/" title="DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘">DASCTF 2024 七月赛 web Sanic's revenge&amp;&amp;ciscn 2024 sanic的复盘</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习"><img alt="NTLM认证学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/" title="NTLM认证学习">NTLM认证学习</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习"><img alt="kerberos协议学习" src= "/img/loading.avif" data-lazy-src="/"></a><div class="content"><span class="title" href="/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/" title="kerberos协议学习">kerberos协议学习</span></div></div></div></div></div></div></main><footer id="footer"><div id="st-footer-bar"><div class="footer-logo"><span>fault# Solitude / fas fa-ghost / /img/pwa/favicon.ico</span></div><div class="footer-bar-description">Articles from Ever Fu.</div><a class="footer-bar-link" href="/about/">Learn more</a></div><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2024 By&nbsp;<a class="footer-bar-link" href="/">fault_li</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><!-- inject body--><div><script src="/js/utils.js?v=2.0.4"></script><script src="/js/main.js?v=2.0.4"></script><script src="/js/third_party/waterfall.min.js?v=2.0.4"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.4"></script><script>dark()
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script><script>var meting_api = 'https://meting.qjqq.cn/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/meting/2.0.1/Meting.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><div class="js-pjax"></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
 
-                
-              </div>
-            
-            <hr/>
-            <div>
-              <div class="post-metas my-3">
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Java/" class="print-no-link">#Java</a>
-      
-    </div>
-  
-</div>
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
 
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
 
-              
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>动态类加载</div>
-      <div>http://example.com/2024/03/21/动态类加载/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>fault_li</div>
-        </div>
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>发布于</div>
-          <div>2024年3月21日</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
-
-              
-                <div class="post-prevnext my-3">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2024/03/21/commons-collection%203/" title="commons-collection 3">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">commons-collection 3</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2024/03/21/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" title="动态代理">
-                        <span class="hidden-mobile">动态代理</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
-              
-            </div>
-
-            
-          </article>
-        </div>
-      </div>
-    </div>
-
-    <div class="side-col d-none d-lg-block col-lg-2">
-      
-  <aside class="sidebar" style="margin-left: -1rem">
-    <div id="toc">
-  <p class="toc-header">
-    <i class="iconfont icon-list"></i>
-    <span>目录</span>
-  </p>
-  <div class="toc-body" id="toc-body"></div>
-</div>
-
-
-
-  </aside>
-
-
-    </div>
-  </div>
-</div>
-
-
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-  
-
-
-
-
-
-
-
-    
-
-    
-      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
-        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-      </a>
-    
-
-    
-      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header text-center">
-        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
-        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-          <input type="text" id="local-search-input" class="form-control validate">
-          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
-        </div>
-        <div class="list-group" id="local-search-result"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-    
-
-    
-  </main>
-
-  <footer>
-    <div class="footer-inner">
-  
-    <div class="footer-content">
-       <a href="https://github.com/fault123" target="_blank" rel="nofollow noopener"><span>fault</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
-    </div>
-  
-  
-  
-  
-</div>
-
-  </footer>
-
-  <!-- Scripts -->
-  
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
-
-  <script>
-    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
-    NProgress.start()
-    window.addEventListener('load', function() {
-      NProgress.done();
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
     })
-  </script>
 
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
-<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
-<script  src="/js/events.js" ></script>
-<script  src="/js/plugins.js" ></script>
+})
 
-
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
-  <script>
-    (function (window, document) {
-      var typing = Fluid.plugins.typing;
-      var subtitle = document.getElementById('subtitle');
-      if (!subtitle || !typing) {
-        return;
-      }
-      var text = subtitle.getAttribute('data-typed-text');
-      
-        typing(text);
-      
-    })(window, document);
-  </script>
-
-
-
-
-  
-    <script  src="/js/img-lazyload.js" ></script>
-  
-
-
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
-    var toc = jQuery('#toc');
-    if (toc.length === 0 || !window.tocbot) { return; }
-    var boardCtn = jQuery('#board-ctn');
-    var boardTop = boardCtn.offset().top;
-
-    window.tocbot.init(Object.assign({
-      tocSelector     : '#toc-body',
-      contentSelector : '.markdown-body',
-      linkClass       : 'tocbot-link',
-      activeLinkClass : 'tocbot-active-link',
-      listClass       : 'tocbot-list',
-      isCollapsedClass: 'tocbot-is-collapsed',
-      collapsibleClass: 'tocbot-is-collapsible',
-      scrollSmooth    : true,
-      includeTitleTags: true,
-      headingsOffset  : -boardTop,
-    }, CONFIG.toc));
-    if (toc.find('.toc-list-item').length > 0) {
-      toc.css('visibility', 'visible');
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
     }
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('tocbot' in window) {
-        tocbot.refresh();
-        var toc = jQuery('#toc');
-        if (toc.length === 0 || !tocbot) {
-          return;
-        }
-        if (toc.find('.toc-list-item').length > 0) {
-          toc.css('visibility', 'visible');
-        }
-      }
-    });
-  });
-</script>
-
-
-  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
-
-  <script>Fluid.plugins.codeWidget();</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
-    window.anchors.options = {
-      placement: CONFIG.anchorjs.placement,
-      visible  : CONFIG.anchorjs.visible
-    };
-    if (CONFIG.anchorjs.icon) {
-      window.anchors.options.icon = CONFIG.anchorjs.icon;
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
     }
-    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-    var res = [];
-    for (var item of el) {
-      res.push('.markdown-body > ' + item.trim());
-    }
-    if (CONFIG.anchorjs.placement === 'left') {
-      window.anchors.options.class = 'anchorjs-link-left';
-    }
-    window.anchors.add(res.join(', '));
-
-    Fluid.events.registerRefreshCallback(function() {
-      if ('anchors' in window) {
-        anchors.removeAll();
-        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
-        var res = [];
-        for (var item of el) {
-          res.push('.markdown-body > ' + item.trim());
-        }
-        if (CONFIG.anchorjs.placement === 'left') {
-          anchors.options.class = 'anchorjs-link-left';
-        }
-        anchors.add(res.join(', '));
-      }
-    });
-  });
-</script>
-
-
-  
-<script>
-  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
-    Fluid.plugins.fancyBox();
-  });
-</script>
-
-
-  <script>Fluid.plugins.imageCaption();</script>
-
-  <script  src="/js/local-search.js" ></script>
-
-
-
-
-  
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/runtime.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/Cherry.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/star.min.js"></script>
-<script src="//cdn.jsdelivr.net/gh/EmoryHuang/BlogBeautify@1.1/love.min.js"></script>
-
-
-
-<!-- 主题的启动项，将它保持在最底部 -->
-<!-- the boot of the theme, keep it at the bottom -->
-<script  src="/js/boot.js" ></script>
-
-
-  
-
-  <noscript>
-    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
-  </noscript>
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body>
-</html>
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"left","width":300,"height":600},"mobile":{"show":true},"react":{"opacity":1},"log":false});</script></body></html><script>const posts=["2024/07/28/工坊wp-RSA2/","2024/07/26/工坊wp-RSA1/","2024/07/23/DASCTF 2024 七月赛 web Sanic's revenge&&ciscn 2024 sanic的复盘/","2024/03/21/NTLM认证学习/","2024/03/21/kerberos协议学习/","2024/03/21/2023/","2024/03/21/NSSCTF IOT题目复现/","2024/03/21/commonscollections-1/","2024/03/21/commons-collections 6/","2024/03/21/commons-collections 4/","2024/03/21/commons-collections 2/","2024/03/21/commons-collection 3/","2024/03/21/动态类加载/","2024/03/21/动态代理/","2024/03/21/URLDNS/","2024/03/21/Tomcat源码初识（tomcat流程）/","2024/03/21/hello-world/","2024/02/18/EL表达式注入/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>
