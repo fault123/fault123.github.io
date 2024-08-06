@@ -3496,6 +3496,19 @@ span.tags-punctuation i {
     display: none;
   }
 }
+.expire {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  background-color: rgba(255,0,0,0.5);
+  border-left: 5px solid var(--efu-red);
+  padding: 10px 16px;
+  color: var(--efu-white);
+}
+.expire i.solitude {
+  color: var(--efu-white);
+  margin-right: 8px;
+}
 #footer {
   position: relative;
   background: linear-gradient(180deg, var(--efu-card-bg-none) 0, var(--efu-card-bg) 25%);
