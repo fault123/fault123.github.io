@@ -1,0 +1,216 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Untitled | fault`s blog</title><noscript>开启JavaScript才能访问本站哦~</noscript><link rel="icon" href="https://q1.qlogo.cn/g?b=qq&amp;nk=2444073573&amp;s=4"><!-- index.css--><link rel="stylesheet" href="/css/index.css?v=2.0.4"><!-- inject head--><link rel="canonical" href="http://example.com/2024/08/13/%E5%87%BA%E9%A2%98/"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"><!-- aplayer--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.css"><!-- swiper--><!-- fancybox ui--><!-- katex--><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css"><!-- Open Graph--><meta name="description" content="web4包题 1反序列化 1难题预留 misc4包题 1难度 密码4包题 1中等（板子rsa） 1简单题预留 pwn 3包题 1中 1难 1中等题预留 re3包 1中 1 难 the magic finger James and the giant peach fantastic Mr fox ma"><!-- pwa--><meta name="apple-mobile-web-app-capable" content="fault`s blog"><meta name="theme-color" content="var(--efu-main)"><meta name="apple-mobile-web-app-status-bar-style" content="var(--efu-main)"><link rel="bookmark" href="https://q1.qlogo.cn/g?b=qq&amp;nk=2444073573&amp;s=4"><link rel="apple-touch-icon" href="https://q1.qlogo.cn/g?b=qq&amp;nk=2444073573&amp;s=4" sizes="180x180"><script>console.log(' %c Solitude %c ' + '2.0.4' + ' %c https://github.com/everfu/hexo-theme-solitude',
+    'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
+    'background:#ff9a9a ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff',
+    'background:unset ; padding: 1px; border-radius: 0 3px 3px 0;  color: #fff')
+</script><script>let mdate = "7-7,9-18,12-13,9-2";
+mdate = (mdate.split(","));
+let ndate = new Date();
+for (let i of mdate) {
+    if (i === (ndate.getMonth()+1) + "-" + (ndate.getDate())) {
+        document.documentElement.classList.add('memorial');
+    }
+}
+</script><script>(()=>{
+        const saveToLocal = {
+            set: function setWithExpiry(key, value, ttl) {
+                if (ttl === 0)
+                    return
+                const now = new Date()
+                const expiryDay = ttl * 86400000
+                const item = {
+                    value: value,
+                    expiry: now.getTime() + expiryDay
+                }
+                localStorage.setItem(key, JSON.stringify(item))
+            },
+            get: function getWithExpiry(key) {
+                const itemStr = localStorage.getItem(key)
+    
+                if (!itemStr) {
+                    return undefined
+                }
+                const item = JSON.parse(itemStr)
+                const now = new Date()
+    
+                if (now.getTime() > item.expiry) {
+                    localStorage.removeItem(key)
+                    return undefined
+                }
+                return item.value
+            }
+        };
+        window.utils = {
+            saveToLocal: saveToLocal,
+            getCSS: (url, id = false) => new Promise((resolve, reject) => {
+              const link = document.createElement('link')
+              link.rel = 'stylesheet'
+              link.href = url
+              if (id) link.id = id
+              link.onerror = reject
+              link.onload = link.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                link.onload = link.onreadystatechange = null
+                resolve()
+              }
+              document.head.appendChild(link)
+            }),
+            getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+              const script = document.createElement('script')
+              script.src = url
+              script.async = true
+              script.onerror = reject
+              script.onload = script.onreadystatechange = function() {
+                const loadState = this.readyState
+                if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+                script.onload = script.onreadystatechange = null
+                resolve()
+              }
+    
+              Object.keys(attr).forEach(key => {
+                script.setAttribute(key, attr[key])
+              })
+    
+              document.head.appendChild(script)
+            }),
+            addGlobalFn: (key, fn, name = false, parent = window) => {
+                const globalFn = parent.globalFn || {}
+                const keyObj = globalFn[key] || {}
+        
+                if (name && keyObj[name]) return
+        
+                name = name || Object.keys(keyObj).length
+                keyObj[name] = fn
+                globalFn[key] = keyObj
+                parent.globalFn = globalFn
+            },
+        }
+    })()</script><!-- global head--><script>const GLOBAL_CONFIG = {
+    root: '/',
+    algolia: undefined,
+    localsearch: undefined,
+    runtime: '2023-04-20 00:00:00',
+    lazyload: {
+        enable: true,
+        error: '/img/error_load.avif'
+    },
+    copyright: {"limit":50,"author":"作者: fault_li","link":"链接: ","source":"来源: fault`s blog","info":"著作权归作者所有。 商业转载请联系作者获得授权，非商业转载请注明出处。"},
+    highlight: {"limit":200,"expand":true,"copy":true,"syntax":"highlight.js"},
+    randomlink: false,
+    lang: {"theme":{"dark":"已切换至深色模式","light":"已切换至浅色模式"},"copy":{"success":"复制成功","error":"复制失败"},"backtop":"返回顶部","time":{"day":"天前","hour":"小时前","just":"刚刚","min":"分钟前","month":"个月前"},"day":" 天","f12":"开发者模式已打开，请遵循GPL协议。","totalk":"无需删除空行，直接输入评论即可"},
+    aside: {
+        sayhello: {
+            morning: "✨ 美好的一天开启啦",
+            noon: "吃得香才能吃得香（确信）",
+            afternoon: "是fault的午睡和游戏时间~",
+            night: "努力学习ing...",
+            goodnight: "碎觉碎觉 😴",
+        },
+        sayhello2: [],
+        sayhello3: {
+            prefix: '好久不见，',
+            back: '欢迎再次回来，',
+        },
+    },
+    covercolor: {
+        enable: false
+    },
+    comment: false,
+    lightbox: 'null',
+    post_ai: false,
+    right_menu: {"mode":{"dark":"深色模式","light":"浅色模式"},"img_error":"此图片无法复制与下载"},
+    lure: {"jump":"404 Not Found","back":"ヾ(≧∇≦*)ゝ嘿嘿，骗到你啦."},
+    expire: {"time":30,"position":"top","text_prev":"This article expired ","text_next":" day ago, if the content does not match, please contact the webmaster to update it."},
+};</script><!-- page-config head--><script id="config-diff">var PAGE_CONFIG = {
+    is_post: true,
+    is_page: false,
+    is_home: false,
+    page: '',
+    toc: true,
+    comment: true,
+    ai_text: false
+}</script><meta name="generator" content="Hexo 7.2.0"></head><body id="body"><!-- universe--><canvas id="universe"></canvas><!-- background img--><!-- loading--><!-- console--><!-- sidebar--><div id="sidebar" style="zoom: 1;"><div id="menu-mask" style="display: none;"></div><div id="sidebar-menus"><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div></div></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><span class="darkmode_switchbutton menu-child" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span>显示模式</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-widget card-tags card-archives card-webinfo card-allinfo"><div class="card-tag-cloud"><a href="/tags/%E6%AF%94%E8%B5%9Bwp/">比赛wp<sup>2</sup></a><a href="/tags/IOT/">IOT<sup>1</sup></a><a href="/tags/%E6%80%BB%E7%BB%93/">总结<sup>1</sup></a><a href="/tags/Java%E5%90%84%E7%A7%8D%E6%B3%A8%E5%85%A5/">Java各种注入<sup>1</sup></a><a href="/tags/Web/">Web<sup>1</sup></a><a href="/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/">域相关<sup>2</sup></a><a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试<sup>1</sup></a><a href="/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/">春秋云境<sup>1</sup></a><a href="/tags/Java/">Java<sup>9</sup></a><a href="/tags/%E6%97%A5%E5%B8%B8/">日常<sup>1</sup></a><a href="/tags/Crypto/">Crypto<sup>2</sup></a></div></div></div></div><!-- keyboard--><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav class="show" id="nav"><div id="nav-group"><div id="blog_name"><a id="site-name" href="/" title="返回博客主页"><span class="title">fault</span><i class="solitude fa-solid fa-home"></i></a></div><div id="page-name-mask"><div id="page-name"><a id="page-name-text" onclick="sco.toTop()">Untitled</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span>Home</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Article</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="solitude  fas fa-folder-closed"></i><span>Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="solitude  fas fa-tags"></i><span>Tags</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span>Friends</span></a><ul class="menus_item_child"><li><a class="site-page child" href="/links/"><i class="solitude  fas fa-user-group"></i><span>Links</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><span>About</span></a></div></div></div><div id="nav-left"></div><div id="nav-right"><div class="nav-button" id="travellings_button"><a class="site-page" target="_blank" rel="noopener" href="https://www.travellings.cn/go.html" title=""><i class="solitude fas fa-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机一篇文章" href="javascript:void(0);"><i class="solitude fa-solid fa-dice-d6"></i></a></div><div class="nav-button" id="nav-totop" onclick="sco.toTop()"><a class="totopbtn"><i class="solitude fa-solid fa-arrow-up"></i><span id="percent">0</span></a></div><div id="toggle-menu"><a class="site-page"><i class="solitude fa-solid fa-bars"></i></a></div></div></div></nav><div class="coverdiv" id="coverdiv"><img class="nolazyload" id="post-cover" src="/img/default.avif" alt="Untitled"></div><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original" title="该文章为原创文章，注意版权协议">原创</a><div class="tag_share"><div class="post-meta__tag-list"></div></div></div></div><h1 class="post-title">Untitled</h1><div id="post-meta"><div class="meta-secondline"><span class="post-meta-date" title="发布于 2024-08-13 07:35:23"><i class="post-meta-icon solitude fa-solid fa-calendar-days"></i><time datetime="2024-08-12T23:35:23.095Z">2024-08-12T23:35:23.095Z</time></span><span class="post-meta-date" title="最后更新于 2024-08-14 19:42:29"><i class="post-meta-icon solitude fa-solid fa-arrow-rotate-right"></i><time datetime="2024-08-14T11:42:29.069Z">2024-08-14T11:42:29.069Z</time></span><span class="post-meta-wordcount"><i class="post-meta-icon solitude fa-solid fa-file-word" title="文章字数"></i><span class="word-count">68</span><span class="post-meta-separator"></span><i class="post-meta-icon solitude fa-solid fa-clock" title="阅读耗时"></i><span>1 min</span></span><span class="post-meta-position" title="作者IP归属地为China"><i class="post-meta-icon solitude fa-solid fa-map"></i><span>China</span></span><a class="post-meta-pv" href="/2024/08/13/%E5%87%BA%E9%A2%98/" title="文章热度"><i class="post-meta-icon solitude fa-solid fa-fire-flame-curved"></i><span id="busuanzi_value_page_pv"><i class="solitude fa-solid fa-spinner"></i></span></a><span class="post-meta-commentcount" title="评论数" onclick="sco.scrollTo('post-comment')"><i class="solitude fa-solid fa-comment"></i><a href="/2024/08/13/%E5%87%BA%E9%A2%98/#post-comment"><span class="valine-comment-count" data-xid="/2024/08/13/%E5%87%BA%E9%A2%98/" itemprop="commentCount"><i class="solitude fa-solid fa-spinner"></i></span></a></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>web4包题 1反序列化 1难题预留<br>
+misc4包题 1难度<br>
+密码4包题 1中等（板子rsa） 1简单题预留<br>
+pwn 3包题 1中 1难 1中等题预留<br>
+re3包 1中 1 难</p>
+<p>the magic finger James and the giant peach fantastic Mr fox matilda</p>
+</article><div class="post-copyright"><div class="post-copyright__author_group"><a class="post-copyright__author_img" href="/about/"><img class="post-copyright__author_img_front" src= "/img/loading.avif" data-lazy-src="https://q1.qlogo.cn/g?b=qq&amp;nk=2444073573&amp;s=4"></a><div class="post-copyright__author_name">fault`s blog</div><div class="post-copyright__author_desc"></div></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div id="quit-box" onclick="RemoveRewardMask()"></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本文是原创文章，采用<a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>协议，完整转载请注明来自<a href="/">fault`s blog</a></span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__tag-list"></div></div></div><nav class="needEndHide pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">CCS巅峰极客wp --by 图书馆五楼风很大</div></div></a></div><div class="next-post pull-right"><a href="/2024/08/06/Initial/"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">春秋云境</div></div></a></div></nav><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="solitude fa-solid fa-comment"></i><span> 评论</span><span class="count"> (<span class="valine-comment-count" data-xid="/2024/08/13/%E5%87%BA%E9%A2%98/" itemprop="commentCount"><i class="solitude fa-solid fa-spinner"></i></span>)</span></div></div><div class="comment-wrap"><div class="vcomment" id="vcomment"></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><div class="author-info__top-group"><div class="author-info__sayhi" id="author-info__sayhi" onclick="sco.changeSayHelloText()">sayhello.morning</div></div></div><div class="avatar-img-group"><img class="avatar-img" alt="头像" src= "/img/loading.avif" data-lazy-src="https://q1.qlogo.cn/g?b=qq&amp;nk=2444073573&amp;s=4"><div class="avatar-sticker"><img class="avatar-sticker-img" src= "/img/loading.avif" data-lazy-src="https://q1.qlogo.cn/g?b=qq&amp;nk=2444073573&amp;s=4" alt="心情贴纸"></div></div><div class="author-info__description_group"><div class="author-info__description">fault的小天地喵</div><div class="author-info__description2">I believe you can find knowledge and tutorials here that will be useful to you.</div></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/about/"><div class="author-info__name">fault_li</div><div class="author-info__desc"></div></a><div class="card-info-social-icons is-center"><a class="social-icon" target="_blank" rel="noopener" href="https://github.com/fault123" title="Github"><i class="solitude  fab fa-github"></i></a><a class="social-icon" target="_blank" rel="noopener" href="https://space.bilibili.com/398904334" title="Bilibili"><i class="solitude  fab fa-bilibili"></i></a></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="solitude fa-solid fa-bars"></i><span>文章目录</span></div><div class="toc-content" id="toc-content"></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="solitude fa-solid fa-map"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/" title="CCS巅峰极客wp --by 图书馆五楼风很大"><img alt="CCS巅峰极客wp --by 图书馆五楼风很大" src= "/img/loading.avif" data-lazy-src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/" title="CCS巅峰极客wp --by 图书馆五楼风很大">CCS巅峰极客wp --by 图书馆五楼风很大</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/13/%E5%87%BA%E9%A2%98/" title="Untitled"><img alt="Untitled" src= "/img/loading.avif" data-lazy-src="/img/default.avif"></a><div class="content"><span class="title" href="/2024/08/13/%E5%87%BA%E9%A2%98/" title="Untitled">Untitled</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/06/Initial/" title="春秋云境"><img alt="春秋云境" src= "/img/loading.avif" data-lazy-src="https://fault-1315577519.cos.ap-nanjing.myqcloud.com/images/20240806102852.png"></a><div class="content"><span class="title" href="/2024/08/06/Initial/" title="春秋云境">春秋云境</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/04/%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%90%90%E6%A7%BD/" title="关于信息泄露的一些吐槽"><img alt="关于信息泄露的一些吐槽" src= "/img/loading.avif" data-lazy-src="https://img.loliapi.com/i/pc/img428.webp"></a><div class="content"><span class="title" href="/2024/08/04/%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%90%90%E6%A7%BD/" title="关于信息泄露的一些吐槽">关于信息泄露的一些吐槽</span></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2"><img alt="工坊wp-RSA2" src= "/img/loading.avif" data-lazy-src="https://img.loliapi.cn/i/pc/img483.webp"></a><div class="content"><span class="title" href="/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/" title="工坊wp-RSA2">工坊wp-RSA2</span></div></div></div></div></div></div></main><footer id="footer"><div id="st-footer-bar"><div class="footer-logo"><span>fault</span></div><div class="footer-bar-description">Articles from fault_li.</div><a class="footer-bar-link" href="/about/">Learn more</a></div><div id="footer_deal"></div><div id="st-footer"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div class="copyright">© 2023 - 2024 By&nbsp;<a class="footer-bar-link" href="/">fault_li</a></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/everfu/hexo-theme-solitude" alt="Theme">Theme</a></div></div></div></footer></div><!-- right_menu--><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="solitude fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="solitude fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="solitude fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-top"><i class="solitude fa-solid fa-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="solitude fa-solid fa-clone"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="solitude fa-solid fa-clipboard"></i><span>粘贴文本</span></div><div class="rightMenu-item" id="menu-commenttext"><i class="solitude fa-solid fa-comment-medical"></i><span>引用到评论</span></div><div class="rightMenu-item" id="menu-newwindow"><i class="solitude fa-regular fa-window-maximize"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="solitude fa-solid fa-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="solitude fa-solid fa-clone"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="solitude fa-solid fa-cloud-arrow-down"></i><span>下载此图片</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"></div><div class="rightMenu-group rightMenu-line rightMenuOther"><div class="rightMenu-item" id="menu-darkmode" onclick="sco.switchDarkMode()"><i class="solitude fa-solid fa-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></div></div></div><div id="rightmenu-mask"></div><!-- inject body--><div><script src="/js/utils.js?v=2.0.4"></script><script src="/js/main.js?v=2.0.4"></script><script src="/js/third_party/waterfall.min.js?v=2.0.4"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pjax/0.2.8/pjax.min.js"></script><script src="/js/third_party/universe.min.js?v=2.0.4"></script><script>dark()
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/19.1.3/lazyload.iife.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script>var meting_api = 'https://meting.qjqq.cn/?server=:server&type=:type&id=:id&auth=:auth&r=:r';</script><script src="https://cdnjs.cloudflare.com/ajax/libs/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/meting/2.0.1/Meting.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js"></script><script src="/js/right_menu.js?v=2.0.4"></script><div class="js-pjax"><script>(() => {
+    const initValine = () => {
+        const valine = new Valine({
+            el: '#vcomment',
+            appId: 'F9QjCm7TBr6LB35r0IAJieDQ-MdYXbMMI',
+            appKey: 'sxYlPHL77ssMvSMC8a9bHzx6',
+            avatar: 'https://valine.js.org/avatar.html',
+            serverURLs: 'https://f9qjcm7t.api.lncldglobal.com',
+            emojiMaps: {"tv_doge":"6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png","tv_亲亲":"a8111ad55953ef5e3be3327ef94eb4a39d535d06.png","tv_偷笑":"bb690d4107620f1c15cff29509db529a73aee261.png","tv_再见":"180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png","tv_冷漠":"b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png","tv_发怒":"34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png","tv_发财":"34db290afd2963723c6eb3c4560667db7253a21a.png","tv_可爱":"9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png","tv_吐血":"09dd16a7aa59b77baa1155d47484409624470c77.png","tv_呆":"fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png","tv_呕吐":"9f996894a39e282ccf5e66856af49483f81870f3.png","tv_困":"241ee304e44c0af029adceb294399391e4737ef2.png","tv_坏笑":"1f0b87f731a671079842116e0991c91c2c88645a.png","tv_大佬":"093c1e2c490161aca397afc45573c877cdead616.png","tv_大哭":"23269aeb35f99daee28dda129676f6e9ea87934f.png","tv_委屈":"d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png","tv_害羞":"a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png","tv_尴尬":"7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png","tv_微笑":"70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png","tv_思考":"90cf159733e558137ed20aa04d09964436f618a1.png","tv_惊吓":"0d15c7e2ee58e935adc6a7193ee042388adc22af.png"},
+            path: window.location.pathname,
+            visitor: true,
+            ...null
+        })
+        GLOBAL_CONFIG.lightbox && utils.lightbox(document.querySelectorAll('#comment .vcontent img:not(.vemoji)'))
+        sco.owoBig({body: '.vwrap', item: '.vemojis i'})
+    }
+    const loadValine = async () => {
+        if (typeof Valine === 'function') setTimeout(initValine, 0)
+        else {
+            await utils.getScript('https://cdnjs.cloudflare.com/ajax/libs/valine/1.5.2/Valine.min.js').then(initValine)
+        }
+        false && barrageValine()
+    }
+    if ('Valine' === 'Valine' || false) {
+        if (false) utils.loadComment(document.getElementById('vcomment'), loadValine)
+        else loadValine()
+    } else {
+        window.loadTwoComment = loadValine
+    }
+})()
+</script><script defer pjax src="https://cdnjs.cloudflare.com/ajax/libs/busuanzi/2.3.0/bsz.pure.mini.min.js"></script></div></div><!-- pjax--><script>const pjax = new Pjax({
+    elements: 'a:not([target="_blank"])',
+    selectors: ['title','#body-wrap','#site-config','meta[name="description"]','.js-pjax','meta[property^="og:"]','#config-diff'],
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+})
+
+document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+})
+
+document.addEventListener('pjax:complete', () => {
+    window.refreshFn()
+
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+        const newScript = document.createElement('script')
+        const content = item.text || item.textContent || item.innerHTML || ""
+        Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+        newScript.appendChild(document.createTextNode(content))
+        item.parentNode.replaceChild(newScript, item)
+    })
+
+    GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+    if (e.request.status === 404) {
+        pjax.loadUrl('/404.html')
+    }
+})</script><!-- theme--><script>initTheme = () => {
+    let isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const cachedMode = utils.saveToLocal.get('theme');
+    if (cachedMode === undefined) {
+        const nowMode =
+            isDarkMode ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', nowMode);
+    } else {
+        document.documentElement.setAttribute('data-theme', cachedMode);
+    }
+    typeof rm === 'object' && rm.mode(cachedMode === 'dark' && isDarkMode)
+}
+initTheme()</script><!-- google adsense--><!-- search--><!-- Tianli-Talk--><!-- music--><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"bottom","width":300,"height":600},"mobile":{"show":false},"react":{"opacity":1},"log":false});</script></body></html><script>const posts=["2024/08/18/CCS巅峰极客wp --by 图书馆五楼风很大/","2024/08/13/出题/","2024/08/06/Initial/","2024/08/04/关于信息泄露的一些吐槽/","2024/07/28/工坊wp-RSA2/","2024/07/26/工坊wp-RSA1/","2024/07/23/DASCTF 2024 七月赛 web Sanic's revenge&&ciscn 2024 sanic的复盘/","2024/03/21/NTLM认证学习/","2024/03/21/kerberos协议学习/","2024/03/21/2023/","2024/03/21/NSSCTF IOT题目复现/","2024/03/21/commonscollections-1/","2024/03/21/commons-collections 6/","2024/03/21/commons-collections 4/","2024/03/21/commons-collections 2/","2024/03/21/commons-collection 3/","2024/03/21/动态类加载/","2024/03/21/动态代理/","2024/03/21/URLDNS/","2024/03/21/Tomcat源码初识（tomcat流程）/","2024/02/18/EL表达式注入/","2023/01/16/fault 2022 年报/"];function toRandomPost(){ pjax.loadUrl(GLOBAL_CONFIG.root+posts[Math.floor(Math.random()*posts.length)]); }</script>
